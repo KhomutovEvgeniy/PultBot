@@ -1,6 +1,7 @@
 import gi
 import GstDrawingArea
 import RTCjoystick
+import config
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
@@ -32,6 +33,8 @@ class InterfaceBot:
         self.startButton.connect("clicked", self.startButton_Click)
         self.stopButton.connect("clicked", self.stopButton_Click)
         self.pauseButton.connect("clicked", self.pauseButton_Click)
+        self.toAppSinkButton.connect("clicked", self.toAppSinkButton_Click)
+        self.toAutoVideoSinkButton.connect("clicked", self.toAutoVideoSinkButton_Click)
 
         self.joystickSwitch.connect("state-set", self.joystickSwitch_Click)
         self.cameraSwitch.connect("state-set", self.cameraSwitch_Click)
@@ -104,10 +107,16 @@ class InterfaceBot:
             self.printLog("Ресурс камеры не создан")
 
     def toAppSinkButton_Click(self, w):     # обработчик нажатия кнопки toAppSinkButton
-        pass
+        if self.gstDrawingArea.source is not None:
+            self.gstDrawingArea.source.toAppSink()
+        else:
+            self.printLog("Ресурс камеры не создан")
 
     def toAutoVideoSinkButton_Click(self, w):   # обработчик нажатия кнопки toAutoVideoSinkButton
-        pass
+        if self.gstDrawingArea.source is not None:
+            self.gstDrawingArea.source.toAutoVideoSink()
+        else:
+            self.printLog("Ресурс камеры не создан")
 
     def joystickSwitch_Click(self, w, state):
         if state:
