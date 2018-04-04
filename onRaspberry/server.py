@@ -14,6 +14,7 @@ server = SimpleXMLRPCServer((selfIP, RPCServerPort))
 
 server.register_function(SetValue)
 server.register_function(GetServoResolution)
+server.register_function(SetValueToAllMotors)
 
 server.serve_forever()
 

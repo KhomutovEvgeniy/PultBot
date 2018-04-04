@@ -24,16 +24,23 @@ def SetValue(dev, value):   # установка значения на
     else:   # если ни одно из этих значений
         return False
     return True     # если все получилось
+	
+	
+def SetValueToAllMotors(value):
+	MotorFL.SetValue(value)
+	MotorFR.SetValue(value)
+	MotorBL.SetValue(value)
+	MotorBR.SetValue(value)
 
 
-def GetServoResolution(srv):
+def GetServoResolution(srv):	# возвращает разрешение сервы
     res = None
-    if srv == "SFL":    # поворот передней левой сервой
+    if srv == "SFL":    # левая серва
         res = SvrFLResolution
-    elif srv == "SFR":  # поворот передней правой сервой
+    elif srv == "SFR":  # правая серва
         res = SvrFRResolution
-    elif srv == "SBL":  # поворот задней левой сервой
+    elif srv == "SBL":  # задняя левая серва
         res = SvrBLResolution
-    elif srv == "SBR":  # поворот задней правой сервой
+    elif srv == "SBR":  
         res = SvrBRResolution
     return res
