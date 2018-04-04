@@ -1,4 +1,5 @@
-from RPiPWM import *
+""" Конфигурация робота """
+from onRaspberry.RPiPWM import *
 """
     F - Front
     B - Backside
@@ -16,14 +17,20 @@ chanRevMotorBL = 14
 chanRevMotorBR = 15
 
 SvrFL = Servo90(chanSrvFL)  # передняя левая
+SvrFLResolution = (0, 90)   # разрешение
+
 SvrFR = Servo90(chanSvrFR)  # передняя правая
+SvrFRResolution = (0, 90)   # разрешение
+
 SvrBL = Servo90(chanSrvBL)  # задняя левая
+SvrBLResolution = (0, 90)   # разрешение
+
 SvrBR = Servo90(chanSrvBR)  # задняя правая
+SvrBRResolution = (0, 90)   # разрешение
 
 MotorFL = ReverseMotor(chanRevMotorFL)  # моторы, индексы аналогичные
 MotorFR = ReverseMotor(chanRevMotorFR)
 MotorBL = ReverseMotor(chanRevMotorBL)
 MotorBR = ReverseMotor(chanRevMotorBR)
 
-SvrSpeed = 10    # скорость сервы
-MotorSpeed = 50     # скорость мотора
+RPCServerPort = 8000    # порт RPC сервера
