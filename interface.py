@@ -1,6 +1,7 @@
 import gi
 import GstDrawingArea
 import RTCjoystick
+import Control
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
@@ -18,6 +19,8 @@ class InterfaceBot:
 
         self.joystickEntry = self.builder.get_object("JoystickEntry")
         self.cameraEntry = self.builder.get_object("CameraEntry")
+		self.robotIpEntry = self.builder.get_object("RobotIpEntry")		# ДОБАВИТЬ
+		self.robotPortEntry = self.builder.get_object("RobotPortEntry")	# ДОБАВИТЬ
 
         self.logView = self.builder.get_object("LogView")
         self.logBuffer = self.logView.get_buffer()
@@ -28,6 +31,7 @@ class InterfaceBot:
         self.stopButton = self.builder.get_object("StopButton")
         self.toAppSinkButton = self.builder.get_object("ToAppSinkButton")
         self.toAutoVideoSinkButton = self.builder.get_object("ToAutoVideoSinkButton")
+		self.connectToRobotButton = self.builder.get_object("ConnectToRobotButton")		# ДОБАВИТЬ
 
         self.clearLogButton.connect("clicked", self.clearLogButton_Click)
         self.startButton.connect("clicked", self.startButton_Click)
@@ -35,6 +39,7 @@ class InterfaceBot:
         self.pauseButton.connect("clicked", self.pauseButton_Click)
         self.toAppSinkButton.connect("clicked", self.toAppSinkButton_Click)
         self.toAutoVideoSinkButton.connect("clicked", self.toAutoVideoSinkButton_Click)
+		self.connectToRobotButton.connect("clicked", self.connectToRobotButton_Click)
 
         self.joystickSwitch.connect("state-set", self.joystickSwitch_Click)
         self.cameraSwitch.connect("state-set", self.cameraSwitch_Click)
@@ -43,12 +48,15 @@ class InterfaceBot:
 
         self.gstDrawingArea = GstDrawingArea.GstDrawingArea()  # виджет-видео
         self.videoBox.pack_start(self.gstDrawingArea, True, True, 0)
-
+		
+		self.control = Control()	# заглушка управления роботом
+		
         self.joystick = None
         try:
             if self.joystickSwitch.get_active():
                 self.joystick = RTCjoystick.Joystick()  # Джойстик
                 self.joystick.connect(self.joystickEntry.get_text())
+				self.control.setJoystick(joystick)
         except:
             self.printLog("Такого джойстика нет")
 
@@ -60,6 +68,7 @@ class InterfaceBot:
             self.gstDrawingArea.source = None
         if self.joystick is not None:
             self.joystick.exit()
+		self.control.exit()
         Gtk.main_quit()
 
     def printLog(self, string):     # печать логов в конец LogView
@@ -124,6 +133,7 @@ class InterfaceBot:
                 try:
                     self.joystick = RTCjoystick.Joystick()
                     self.joystick.connect(self.joystickEntry.get_text())
+					self.control.setJoystick(joystick)
                 except:
                     self.printLog("Такого Джойстика нет")
             else:
@@ -146,6 +156,9 @@ class InterfaceBot:
                 self.printLog("Камера удалена")
             except:
                 self.printLog("Не удалось удалить камеру")
+				
+	def connectToRobotButton_Click(self, w):
+		self.control.robot.connect(self.robotIpEntry.get_text(), self.robotPortEntry.get_text())
 
 
 a = InterfaceBot()

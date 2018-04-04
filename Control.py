@@ -19,6 +19,7 @@ class Control(threading.Thread):
 		
 	def setJoystick(joystick):	# устанавливаем джойстик, которым будем управлять
 		self.joystick = joystick
+		self.connectHandlers()
 		
 	def run(self):
 		while not self.EXIT:
@@ -26,6 +27,16 @@ class Control(threading.Thread):
 				self.robot.turn(self.joystick.get(TURN_STICK))	# поворот
 				self.robot.move(self.joystick.get(MOVE_STICK))	# движение
 			
+	def connectHandlers(self):
+		def addSpeed():
+			self.robot.setMotorsSpeed(self.robot.MotorSpeed + SPEED_CHANGE_STEP)
+			
+		def	subSpeed():
+			self.robot.setMotorsSpeed(self.robot.MotorSpeed - SPEED_CHANGE_STEP)
+			
+		joystick.connectButton(ADD_SPEED_BUTTON, addSpeed)
+		joystick.connectButton(SUB_SPEED_BUTTON, subSpeed)
+	
 	def exit(self):
 		self.EXIT = True
 		
