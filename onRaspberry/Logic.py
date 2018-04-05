@@ -5,10 +5,8 @@ import camera
 
 def setSpeedToAllMotors(value):
     if not camera.AUTO:
-        MotorFL.SetValue(value)
-        MotorFR.SetValue(value)
-        MotorBL.SetValue(value)
-        MotorBR.SetValue(value)
+        MotorLB.SetValue(value)
+        MotorRB.SetValue(value)
     return True
 
 
@@ -27,7 +25,8 @@ def rotate(speed):
         SvrFR.SetValue(90)
         SvrBL.SetValue(90)
         SvrBR.SetValue(0)
-        SetValueToAllMotors(speed)
+        SetSpeedToAllMotors(speed)
+    return True
 
 
 def setAutonomy(b):

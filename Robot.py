@@ -28,9 +28,6 @@ class Robot:
     def rotate(self, scale):
         self.client.rotate(scale * self.MotorSpeed)
 
-    def setAutonomy(self, b):
-        self.client.setAutonomy(b)
-
     def setMotorsSpeed(self, value):
         if value >= 100:
             self.MotorSpeed = 100

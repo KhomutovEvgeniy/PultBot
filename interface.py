@@ -132,7 +132,7 @@ class InterfaceBot:
                 try:
                     self.joystick = RTCjoystick.Joystick()
                     self.joystick.connect(self.joystickEntry.get_text())
-                    self.control.setJoystick(joystick)
+                    self.control.setJoystick(self.joystick)
                 except:
                     self.printLog("Такого Джойстика нет")
             else:
@@ -158,6 +158,9 @@ class InterfaceBot:
 
     def connectToRobotButton_Click(self, w):
         self.control.robot.connect(self.robotIpEntry.get_text(), self.robotPortEntry.get_text())
+        self.joystick.start()
+        self.control.start()
+        self.printLog("Робот подключен")
 
 
 a = InterfaceBot()

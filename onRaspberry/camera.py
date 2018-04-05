@@ -9,12 +9,10 @@ import threading
 from config import *
 import rpicam
 
-from config import *
-
 # настройки видеопотока
 FORMAT = rpicam.FORMAT_H264  # поток H264
 # FORMAT = rpicam.FORMAT_MJPG #поток MJPG
-WIDTH, HEIGHT = 640, 360
+WIDTH, HEIGHT = 640, 480
 RESOLUTION = (WIDTH, HEIGHT)
 FRAMERATE = 30
 
@@ -33,7 +31,6 @@ def exit():
     # останавливаем обработку кадров
     try:
         frameHandlerThread.stop()
-
         # останов трансляции c камеры
         rpiCamStreamer.stop()
         rpiCamStreamer.close()
@@ -147,11 +144,8 @@ rpiCamStreamer.setRotation(180)  # поворачиваем кадр на 180 г
 
 
 def setSpeed(l, r):
-    SvrFL.SetValue(l)
-    SvrBL.SetValue(l)
-
-    SvrFR.SetValue(r)
-    SvrBR.SetValue(r)
+    MotorLB.SetValue(l)
+    MotorRB.SetValue(r)
 
 
 # поток обработки кадров
