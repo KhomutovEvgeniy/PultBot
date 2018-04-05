@@ -6,6 +6,8 @@ from RPiPWM import *
     L - Left
     R - Right
 """
+IP = '173.1.0.92'  # IP адрес куда отправляем видео
+
 chanSrvFL = 1   # канал для передней левой сервы
 chanSvrFR = 2   # канал для передней правой сервы
 chanSrvBL = 3   # канал для задней левой сервы
@@ -16,6 +18,8 @@ chanRevMotorFL = 12     # каналы моторов, индексы анало
 chanRevMotorFR = 13
 chanRevMotorBL = 14
 chanRevMotorBR = 15
+
+SERVO_RESOLUTION = 90
 
 SvrFL = Servo90(chanSrvFL)  # передняя левая
 SvrFLResolution = (0, 90)   # разрешение
