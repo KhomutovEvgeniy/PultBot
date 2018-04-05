@@ -11,6 +11,8 @@ def SetValue(dev, value):  # установка значения на
         SvrBL.SetValue(value)
     elif dev == "SBR":  # поворот задней правой сервой
         SvrBR.SetValue(value)
+    elif dev == "SCM":  # поворот сервы с камерой
+        SvrCAM.SetValue(value)
 
     elif dev == "MFL":  # изменение скорости переднего левого мотора
         MotorFL.SetValue(value)

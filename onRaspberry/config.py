@@ -10,6 +10,7 @@ chanSrvFL = 1   # канал для передней левой сервы
 chanSvrFR = 2   # канал для передней правой сервы
 chanSrvBL = 3   # канал для задней левой сервы
 chanSrvBR = 4   # канал для задней правой сервы
+chanSvrCAM = 5  # канал для сервы с камерой
 
 chanRevMotorFL = 12     # каналы моторов, индексы аналогичны сервам
 chanRevMotorFR = 13
@@ -27,6 +28,9 @@ SvrBLResolution = (0, 90)   # разрешение
 
 SvrBR = Servo90(chanSrvBR)  # задняя правая
 SvrBRResolution = (0, 90)   # разрешение
+
+SvrCAM = Servo90(chanSvrCAM)    # серва с камерой
+SvrCaMResolution = (0, 90)
 
 MotorFL = ReverseMotor(chanRevMotorFL)  # моторы, индексы аналогичные
 MotorFR = ReverseMotor(chanRevMotorFR)
