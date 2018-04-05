@@ -1,6 +1,5 @@
 """ Логика работы робота """
 from config import *
-import camera
 
 
 def setSpeedToAllMotors(value):
@@ -29,13 +28,5 @@ def rotate(speed):
     return True
 
 
-def setAutonomy(b):
-    SvrCAM.setValue(0)
-    camera.setAUTO(b)
-    return True
-
-
-def getAUTO():
-    return camera.AUTO
 
 

@@ -38,11 +38,6 @@ def exit():
         pass
 
 
-def setAUTO(b):
-    global AUTO
-    AUTO = b
-
-
 class FrameHandler(threading.Thread):
     def __init__(self, stream, setSpeed):
         super(FrameHandler, self).__init__()
@@ -56,11 +51,11 @@ class FrameHandler(threading.Thread):
         self._frameCount = 0
         self._stopped = threading.Event()  # событие для остановки потока
         self._newFrameEvent = threading.Event()  # событие для контроля поступления кадров
+        self.AUTO = False
 
     def run(self):
-        global AUTO  # инициализируем глобальные перменные
         while not self._stopped.is_set():  # пока мы живём
-            while AUTO:  # если врублена автономка
+            while self.AUTO:  # если врублена автономка
                 height = 480  # инициализируем размер фрейма
                 width = 640
                 self.rpiCamStream.frameRequest()  # отправил запрос на новый кадр
@@ -126,6 +121,26 @@ class FrameHandler(threading.Thread):
             self._frame = frame
             self._newFrameEvent.set()  # задали событие
         return self._newFrameEvent.is_set()
+
+    def setAUTO(self, b):
+        self.AUTO = b
+
+
+def setAutonomy(b):
+    try:
+        if b:
+            SvrCAM.SetValue(0)
+            frameHandlerThread.setAUTO(True)
+        else:
+            SvrCAM.SetValue(int((SvrCAMResolution[1] - SvrCAMResolution[0]) / 2))
+            frameHandlerThread.setAUTO(False)
+    except:
+        pass
+    return True
+
+
+def getAUTO():
+    return frameHandlerThread.AUTO
 
 
 def onFrameCallback(frame):  # обработчик события 'получен кадр'
