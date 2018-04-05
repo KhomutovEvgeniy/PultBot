@@ -1,5 +1,5 @@
 """ Логика работы робота """
-from onRaspberry.config import *
+from config import *
 
 
 def SetValue(dev, value):  # установка значения на
@@ -32,10 +32,10 @@ def SetValueToAllMotors(value):
     MotorFR.SetValue(value)
     MotorBL.SetValue(value)
     MotorBR.SetValue(value)
-
+    return True
 
 def GetServoResolution(srv):  # возвращает разрешение сервы
-    res = None
+    res = False
     if srv == "SFL":  # левая серва
         res = SvrFLResolution
     elif srv == "SFR":  # правая серва
@@ -45,3 +45,12 @@ def GetServoResolution(srv):  # возвращает разрешение сер
     elif srv == "SBR":
         res = SvrBRResolution
     return res
+
+def turnForward(scale):		# поворот передней части робота
+    print(scale)
+    tempFL = int((SvrFLResolution[1]-SvrFLResolution[0]) / 2)
+    tempFR = int((SvrFRResolution[1]-SvrFRResolution[0]) / 2)
+    SvrFL.SetValue( int( scale*tempFL ) + tempFL )
+    SvrFR.SetValue( int( scale*tempFR ) + tempFR )
+    print( int( scale*tempFL ) + tempFL )
+    return True

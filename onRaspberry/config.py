@@ -1,5 +1,5 @@
 """ Конфигурация робота """
-from onRaspberry.RPiPWM import *
+from RPiPWM import *
 """
     F - Front
     B - Backside
