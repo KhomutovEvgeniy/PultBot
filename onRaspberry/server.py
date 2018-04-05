@@ -25,6 +25,3 @@ server.register_function(getAUTO)
 server.serve_forever()
 
 
-
-
-
