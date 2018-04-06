@@ -4,14 +4,13 @@ import camera
 
 
 def setSpeedToAllMotors(value):
-    if not camera.AUTO:
-        MotorLB.SetValue(value)
-        MotorRB.SetValue(value)
+    MotorLB.SetValue(value)
+    MotorRB.SetValue(value)
     return True
 
 
 def turnForward(scale):  # поворот передней части робота
-    if not camera.AUTO:
+    if not camera.frameHandlerThread.AUTO:
         tempFL = int((SvrFLResolution[1] - SvrFLResolution[0]) / 2)
         tempFR = int((SvrFRResolution[1] - SvrFRResolution[0]) / 2)
         SvrFL.SetValue(int(scale * tempFL) + tempFL)
@@ -20,7 +19,7 @@ def turnForward(scale):  # поворот передней части робот
 
 
 def rotate(speed):
-    if not camera.AUTO:
+    if not camera.frameHandlerThread.AUTO:
         SvrFL.SetValue(0)
         SvrFR.SetValue(90)
         SvrBL.SetValue(90)
