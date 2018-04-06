@@ -8,14 +8,14 @@ import psutil
 import threading
 from config import *
 import rpicam
-import Queue
-
+import queue
 from config import *
 
+
 # настройки видеопотока
-FORMAT = rpicam.FORMAT_H264  # поток H264
-# FORMAT = rpicam.FORMAT_MJPG #поток MJPG
-WIDTH, HEIGHT = 640, 360
+#FORMAT = rpicam.FORMAT_H264  # поток H264
+FORMAT = rpicam.FORMAT_MJEPG #поток MJPG
+WIDTH, HEIGHT = 640, 489
 RESOLUTION = (WIDTH, HEIGHT)
 FRAMERATE = 30
 
@@ -56,7 +56,7 @@ class FrameHandler(threading.Thread):
         self._stopped = threading.Event()  # событие для остановки потока
         self._newFrameEvent = threading.Event()  # событие для контроля поступления кадров
         self.AUTO = False
-        self.queue = Queue.Queue()
+        self.queue = queue.Queue()
 
     def run(self):
         while not self._stopped.is_set():  # пока мы живём

@@ -48,9 +48,10 @@ class Control(threading.Thread):
 
         def setAuto():
             try:
-                self.AUTO = not self.robot.client.getAUTO()
+                self.AUTO = not self.AUTO
                 self.robot.client.setAutonomy(self.AUTO)  # инвертируем состоянии автономки
             except:
+                self.AUTO = not self.AUTO
                 print("Коллизия автономки, попробуйте еще раз")
 
         self.joystick.connectButton(ADD_SPEED_BUTTON, addSpeed)
