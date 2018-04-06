@@ -34,9 +34,10 @@ class Control(threading.Thread):
                             self.robot.turn(self.joystick.Axis.get(TURN_STICK))  # поворот
                             self.robot.move(self.joystick.Axis.get(MOVE_STICK))  # движение
                         else:
-                            self.robot.client.rotate(self.joystick.Axis.get(ROTATE_STICK))
+                            self.robot.rotate(self.joystick.Axis.get(ROTATE_STICK))
+                            print(self.joystick.Axis.get(ROTATE_STICK)*self.robot.MotorSpeed)
             except:
-                pass
+                print(111)
             time.sleep(SEND_DELAY)
 
     def connectHandlers(self):
