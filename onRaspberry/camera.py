@@ -8,6 +8,7 @@ import psutil
 import threading
 from config import *
 import rpicam
+import Queue
 
 from config import *
 
@@ -22,7 +23,7 @@ FRAMERATE = 30
 
 RTP_PORT = 5000  # порт отправки RTP видео
 
-AUTO = False
+
 SENSIVITY = 102
 EXIT = False
 
@@ -41,11 +42,6 @@ def exit():
         pass
 
 
-def setAUTO(b):
-    global AUTO
-    AUTO = b
-
-
 class FrameHandler(threading.Thread):
     def __init__(self, stream, setSpeed):
         super(FrameHandler, self).__init__()
@@ -59,11 +55,12 @@ class FrameHandler(threading.Thread):
         self._frameCount = 0
         self._stopped = threading.Event()  # событие для остановки потока
         self._newFrameEvent = threading.Event()  # событие для контроля поступления кадров
+        self.AUTO = False
+        self.queue = Queue.Queue()
 
     def run(self):
-        global AUTO  # инициализируем глобальные перменные
         while not self._stopped.is_set():  # пока мы живём
-            while AUTO:  # если врублена автономка
+            while self.AUTO:  # если врублена автономка
                 height = 480  # инициализируем размер фрейма
                 width = 640
                 self.rpiCamStream.frameRequest()  # отправил запрос на новый кадр
@@ -113,9 +110,13 @@ class FrameHandler(threading.Thread):
                         self.setSpeed(0, 0)
 
                 self._newFrameEvent.clear()  # сбрасываем событие
-
+            time.sleep(0.5)
         print('Frame handler stopped')
         self.setSpeed(0, 0)
+
+    def setAutonomy(self, b):
+        self.queue.put(b)
+        self.AUTO = self.queue.get(b)
 
     def stop(self):  # остановка потока
         self._stopped.set()

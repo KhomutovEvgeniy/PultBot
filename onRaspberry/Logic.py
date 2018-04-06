@@ -29,14 +29,8 @@ def rotate(speed):
     return True
 
 
-def setAutonomy(b):
-    SvrCAM.setValue(0)
-    camera.setAUTO(b)
-    return True
-
-
-def getAUTO():
-    return camera.AUTO
+def setAutonomy(b):     # ее запихиваем в сервер
+    camera.frameHandlerThread.setAutonomy(b)
 
 
 

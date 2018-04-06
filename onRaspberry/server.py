@@ -5,7 +5,6 @@ from xmlrpc.server import SimpleXMLRPCServer
 import subprocess
 from config import *
 from Logic import *
-import camera
 
 cmd = 'hostname -I | cut -d\' \' -f1'
 selfIP = subprocess.check_output(cmd, shell=True)     # получаем IP
@@ -20,7 +19,6 @@ server.register_function(turnForward)
 server.register_function(rotate)
 server.register_function(setSpeedToAllMotors)
 server.register_function(setAutonomy)
-server.register_function(getAUTO)
 
 server.serve_forever()
 
