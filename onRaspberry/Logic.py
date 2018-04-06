@@ -30,6 +30,10 @@ def rotate(speed):
 
 
 def setAutonomy(b):     # ее запихиваем в сервер
+    if b:
+        SvrCAM.SetValue(0)
+    else:
+        SvrCAM.SetValue(int((SvrCAMResolution[1] - SvrCAMResolution[0]) / 2))
     camera.frameHandlerThread.setAutonomy(b)
 
 
