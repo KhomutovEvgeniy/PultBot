@@ -92,7 +92,6 @@ class FrameHandler(threading.Thread):
                         cv2.line(frame, (0, cy), (width, cy), (255, 0, 0), 1)
 
                         cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)  # рисуем контур
-                        self.sender.addFrame(frame)
 
                         speed = 55
 
@@ -147,7 +146,7 @@ rpiCamStreamer = rpicam.RPiCamStreamer(FORMAT, RESOLUTION, FRAMERATE, (IP, RTP_P
 rpiCamStreamer.setRotation(180)  # поворачиваем кадр на 180 град, доступные значения 90, 180, 270
 
 
-def setSpeed(l, r):
+def setSpeed(self, l, r):
     MotorLB.SetValue(l)
     MotorRB.SetValue(r)
 

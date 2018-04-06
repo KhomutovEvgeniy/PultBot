@@ -34,6 +34,7 @@ def setAutonomy(b):     # ее запихиваем в сервер
     else:
         SvrCAM.SetValue(int((SvrCAMResolution[1] - SvrCAMResolution[0]) / 2))
     camera.frameHandlerThread.setAutonomy(b)
+    return True
 
 
 
