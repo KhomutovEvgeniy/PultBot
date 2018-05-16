@@ -1,6 +1,6 @@
 import gi
 import GstDrawingArea
-import RTCjoystick
+import RTCJoystick
 import Control
 
 gi.require_version("Gtk", "3.0")
@@ -51,13 +51,14 @@ class InterfaceBot:
         self.control = Control.Control()  # заглушка управления роботом
 
         self.joystick = None
+
         try:
             if self.joystickSwitch.get_active():
-                self.joystick = RTCjoystick.Joystick()  # Джойстик
+                self.joystick = RTCJoystick.Joystick()  # Джойстик
                 self.joystick.connect(self.joystickEntry.get_text())
                 self.control.setJoystick(self.joystick)
-        except:
-            self.printLog("Такого джойстика нет")
+        except Exception as e:
+            self.printLog(e.__str__())
 
         self.window.show_all()
 
@@ -87,21 +88,21 @@ class InterfaceBot:
                     self.printLog("Ресурс камеры создан")
                 else:
                     self.printLog("Камера отключена")
-            except:
-                self.printLog("Не получается воспроизвести видеоресурс")
+            except Exception as e:
+                self.printLog(e.__str__())
         else:
             try:
                 self.gstDrawingArea.source.start()
-            except:
-                self.printLog("Видео уже запущено")
+            except Exception as e:
+                self.printLog(e.__str__())
 
     def stopButton_Click(self, w):  # обработчик нажатия кнопки stopButton
         if self.gstDrawingArea.source is not None:
             try:
                 self.gstDrawingArea.source.stop()
                 self.gstDrawingArea.source = None
-            except:
-                self.printLog("Не получается остановить видеоресурс")
+            except Exception as e:
+                self.printLog(e.__str__())
         else:
             self.printLog("Ресурс камеры не создан")
 
@@ -109,8 +110,8 @@ class InterfaceBot:
         if self.gstDrawingArea.source is not None:
             try:
                 self.gstDrawingArea.source.paused()
-            except:
-                self.printLog("Не получается поставить на паузу видеоресурс")
+            except Exception as e:
+                self.printLog(e.__str__())
         else:
             self.printLog("Ресурс камеры не создан")
 
@@ -130,11 +131,11 @@ class InterfaceBot:
         if state:
             if self.joystick is None:  # если до этого джойстик не был создан
                 try:
-                    self.joystick = RTCjoystick.Joystick()
+                    self.joystick = RTCJoystick.Joystick()
                     self.joystick.connect(self.joystickEntry.get_text())
                     self.control.setJoystick(self.joystick)
-                except:
-                    self.printLog("Такого Джойстика нет")
+                except Exception as e:
+                    self.printLog(e.__str__())
             else:
                 pass
         else:
@@ -153,8 +154,8 @@ class InterfaceBot:
                 self.gstDrawingArea.source.stop()
                 self.gstDrawingArea.source = None
                 self.printLog("Камера удалена")
-            except:
-                self.printLog("Не удалось удалить камеру")
+            except Exception as e:
+                self.printLog(e.__str__())
 
     def connectToRobotButton_Click(self, w):
         self.control.robot.connect(self.robotIpEntry.get_text(), self.robotPortEntry.get_text())

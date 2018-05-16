@@ -12,6 +12,8 @@ selfIP.rstrip().decode("utf-8")     # удаляем \n, переводим в �
 camera.rpiCamStreamer.start()  # запускаем трансляцию
 camera.frameHandlerThread.start()  # запускаем обработку
 
+SvrCAM.SetValue(45)
+
 
 server = SimpleXMLRPCServer((selfIP, RPCServerPort))
 

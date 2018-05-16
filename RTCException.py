@@ -46,8 +46,7 @@ class RTCLinkError(RTCBaseError):
     """Исключение вызывается в случае ошибки линковки
     Аттрибуты:
         targetlink -- первый объект линковки
-        linkto -- второй объект линковки
-    """
+        linkto -- второй объект линковки"""
 
     def __init__(self, targetlink, linkto):
         super(RTCLinkError, self).__init__(None, "Не получается линковать объект " + targetlink + " с объектом " + linkto)
@@ -55,6 +54,41 @@ class RTCLinkError(RTCBaseError):
         self.targetlink = targetlink
         self.linkto = linkto
 
+
+class RTCJoyCrashError(RTCBaseError):
+    """Исключение вызывается в случае, когда крашнулся джойстик
+    Аттрибуты:
+        наследуются из базового класса"""
+
+    def __init__(self, msg):
+        super(RTCJoyCrashError, self).__init__(None, msg)
+        self.expression = None
+
+
+class RTCJoyNotFoundError(RTCBaseError):
+    """Исключение вызывается в случае, когда указанный джойстик не найден
+    Аттрибуты:
+        jName -- имя ненайденного джойстика
+        остальное наследуется из базового класса"""
+
+    def __init__(self, jName, msg):
+        super(RTCJoyNotFoundError, self).__init__(None, jName + ": " + msg)
+        self.expression = None
+        self.jName = jName
+        self.message = msg
+
+
+class RTCButtonError(RTCBaseError):
+    """Исключение, которое вызывается, когда указанной кнопки на джойстике не существует
+    Аттрибуты:
+        bName -- имя несуществующей кнопки
+        остальное наследуется из базового класса"""
+
+    def __init__(self, bName, msg):
+        super(RTCButtonError, self).__init__(None, bName + ": " + msg)
+        self.expression = None
+        self.bName = bName
+        self.message = msg
 
 """
 raise RTCInternalError("туть", "кривые руки")

@@ -4,7 +4,7 @@ import camera
 
 
 def setSpeedToAllMotors(value):
-    MotorLB.SetValue(value)
+    MotorLB.SetValue(-value)
     MotorRB.SetValue(value)
     return True
 
@@ -24,7 +24,8 @@ def rotate(speed):
         SvrFR.SetValue(90)
         SvrBL.SetValue(90)
         SvrBR.SetValue(0)
-        SetSpeedToAllMotors(speed)
+        MotorLB.SetValue(speed)
+        MotorRB.SetValue(speed)
     return True
 
 
