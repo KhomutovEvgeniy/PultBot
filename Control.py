@@ -7,45 +7,38 @@ from config import *
 
 class Control(threading.Thread):
     def __init__(self):
-        threading.Thread.__init__(self)
+        threading.Thread.__init__(self, daemon=True)
         self.robot = Robot.Robot()
-        self.joystick = None
-        self.EXIT = False
+        self._joystick = None
+        self._EXIT = False
 
     def setJoystick(self, joystick):  # устанавливаем джойстик, которым будем управлять
-        self.joystick = joystick
+        self._joystick = joystick
         self.connectHandlers()
 
     def run(self):
-        while not self.EXIT:
+        while not self._EXIT:
             try:
-                if (self.robot.client is not None) and (self.joystick is not None):  # если клиент создан
-                    if int(self.joystick.Axis.get(ROTATE_STICK)*100.0) == 0:  # если нет разворота на месте в
-                        # приближении)
-                        self.robot.turn(self.joystick.Axis.get(TURN_STICK))  # поворот
-                        self.robot.move(self.joystick.Axis.get(MOVE_STICK))  # движение
+                if self._robot.online and (self._joystick is not None):  # если клиент и джойстик созданы
+                    if int(self._joystick.Axis.get(ROTATE_STICK)*100.0) == 0:  # если нет разворота на месте в
+                        # приближении(некоторые стики повреждены))
+                        self._robot.turnForward(self._joystick.Axis.get(TURN_STICK))  # поворот
+                        self._robot.move(self._joystick.Axis.get(MOVE_STICK))  # движение
                     else:
-                        self.robot.rotate(self.joystick.Axis.get(ROTATE_STICK))     # поворот на месте
+                        self._robot.rotate(self._joystick.Axis.get(ROTATE_STICK))     # поворот на месте
             except:
                 pass
             time.sleep(SEND_DELAY)
 
     def connectHandlers(self):  # привязка обработчиков кнопок
         def addSpeed():
-            self.robot.setMotorsSpeed(self.robot.MotorSpeed + SPEED_CHANGE_STEP)
+            self._robot.motorSpeed += SPEED_CHANGE_STEP     # прибавляем скорость
 
         def subSpeed():
-            self.robot.setMotorsSpeed(self.robot.MotorSpeed - SPEED_CHANGE_STEP)
+            self._robot.motorSpeed -= SPEED_CHANGE_STEP     # уменьшаем скорость
 
-        def invertAuto():
-            try:
-                self.robot.invertAutonomy()     # инвертируем состоянии автономки
-            except:
-                print("Коллизия автономки, попробуйте еще раз")
-
-        self.joystick.connectButton(ADD_SPEED_BUTTON, addSpeed)
-        self.joystick.connectButton(SUB_SPEED_BUTTON, subSpeed)
-        self.joystick.connectButton(SET_AUTO_BUTTON, invertAuto)
+        self._joystick.connectButton(ADD_SPEED_BUTTON, addSpeed)
+        self._joystick.connectButton(SUB_SPEED_BUTTON, subSpeed)
 
     def exit(self):
-        self.EXIT = True
+        self._EXIT = True

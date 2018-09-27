@@ -1,7 +1,7 @@
 import gi
-import GstDrawingArea
-import RTCJoystick
+from Future import GstDrawingArea
 import Control
+import RTCJoystick
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk

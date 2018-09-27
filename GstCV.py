@@ -4,7 +4,7 @@ import numpy
 from RTCException import *
 
 gi.require_version("Gst", "1.0")
-from gi.repository import Gst, GObject, GLib
+from gi.repository import Gst, GObject
 
 
 class CVGstreamer:
