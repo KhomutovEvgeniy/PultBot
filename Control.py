@@ -19,23 +19,23 @@ class Control(threading.Thread):
     def run(self):
         while not self._EXIT:
             try:
-                if self._robot.online and (self._joystick is not None):  # если клиент и джойстик созданы
+                if self.robot.online and (self._joystick is not None):  # если клиент и джойстик созданы
                     if int(self._joystick.Axis.get(ROTATE_STICK)*100.0) == 0:  # если нет разворота на месте в
                         # приближении(некоторые стики повреждены))
-                        self._robot.turnForward(self._joystick.Axis.get(TURN_STICK))  # поворот
-                        self._robot.move(self._joystick.Axis.get(MOVE_STICK))  # движение
+                        self.robot.turnForward(self._joystick.Axis.get(TURN_STICK))  # поворот
+                        self.robot.move(self._joystick.Axis.get(MOVE_STICK))  # движение
                     else:
-                        self._robot.rotate(self._joystick.Axis.get(ROTATE_STICK))     # поворот на месте
+                        self.robot.rotate(self._joystick.Axis.get(ROTATE_STICK))     # поворот на месте
             except:
                 pass
             time.sleep(SEND_DELAY)
 
     def connectHandlers(self):  # привязка обработчиков кнопок
         def addSpeed():
-            self._robot.motorSpeed += SPEED_CHANGE_STEP     # прибавляем скорость
+            self.robot.motorSpeed += SPEED_CHANGE_STEP     # прибавляем скорость
 
         def subSpeed():
-            self._robot.motorSpeed -= SPEED_CHANGE_STEP     # уменьшаем скорость
+            self.robot.motorSpeed -= SPEED_CHANGE_STEP     # уменьшаем скорость
 
         self._joystick.connectButton(ADD_SPEED_BUTTON, addSpeed)
         self._joystick.connectButton(SUB_SPEED_BUTTON, subSpeed)

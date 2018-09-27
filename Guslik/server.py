@@ -3,6 +3,7 @@
 """ Сервер, установленный на малине """
 from xmlrpc.server import SimpleXMLRPCServer
 import subprocess
+from config import *
 
 cmd = 'hostname -I | cut -d\' \' -f1'
 selfIP = subprocess.check_output(cmd, shell=True)     # получаем IP
