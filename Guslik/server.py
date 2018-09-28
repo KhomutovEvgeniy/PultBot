@@ -13,6 +13,7 @@ selfIP.rstrip().decode("utf-8")     # удаляем \n, переводим в �
 server = SimpleXMLRPCServer((selfIP, RPCServerPort))
 
 server.register_function(turnForward)
+server.register_function(turnAll)
 server.register_function(rotate)
 server.register_function(move)
 

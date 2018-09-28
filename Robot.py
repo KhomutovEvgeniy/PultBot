@@ -27,6 +27,9 @@ class Robot:    # класс, переносящий ф-ии с робота н�
         # MotorSpeed*коэффициент scale
         self._client.rotate(int(scale * self._motorSpeed))
 
+    def turnAll(self, scale):   # поворачивает всеми сервами на один и тот же угол
+        self._client.turnAll(scale)
+
     @property
     def online(self):   # создан ли клиент
         return bool(self._client)
