@@ -10,6 +10,7 @@ from RPiPWM import *
 IP = '173.1.0.78'  # IP адрес куда отправляем видео
 RPCServerPort = 8000  # порт RPC сервера
 RTP_PORT = 5000
+PORT = 9000
 
 chanSrvFL = 8  # канал для передней левой сервы
 chanSvrFR = 11  # канал для передней правой сервы
