@@ -4,6 +4,7 @@
 from xmlrpc.server import SimpleXMLRPCServer
 import subprocess
 from config import *
+import camera
 
 cmd = 'hostname -I | cut -d\' \' -f1'
 selfIP = subprocess.check_output(cmd, shell=True)     # получаем IP
@@ -16,6 +17,7 @@ server.register_function(turnForward)
 server.register_function(turnAll)
 server.register_function(rotate)
 server.register_function(move)
+camera.start()
 
 server.serve_forever()
 

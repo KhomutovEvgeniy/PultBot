@@ -3,6 +3,7 @@
 from RTCJoystick import Joystick
 from Control import Control
 from config import *
+import time
 
 joystick = Joystick()
 joystick.connect("/dev/input/js0")
@@ -16,6 +17,6 @@ joystick.start()
 control.start()
 
 while True:
-    pass
+    time.sleep(0.5)
 
 

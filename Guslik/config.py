@@ -9,15 +9,16 @@ from RPiPWM import *
 """
 IP = '173.1.0.78'  # IP адрес куда отправляем видео
 RPCServerPort = 8000  # порт RPC сервера
+RTP_PORT = 5000
 
-chanSrvFL = 9  # канал для передней левой сервы
-chanSvrFR = 8  # канал для передней правой сервы
-chanSrvBL = 11  # канал для задней левой сервы
+chanSrvFL = 8  # канал для передней левой сервы
+chanSvrFR = 11  # канал для передней правой сервы
+chanSrvBL = 9  # канал для задней левой сервы
 chanSrvBR = 10  # канал для задней правой сервы
 chanSvrCAM = 5  # канал для сервы с камерой
 
-chanRevMotorLB = 14  # каналы моторов, индексы аналогичны сервам
-chanRevMotorRB = 15
+chanRevMotorLB = 15  # каналы моторов, индексы аналогичны сервам
+chanRevMotorRB = 14
 
 servoResolutionDeg = -90, 90    # разрешение с центром в нуле
 servoResolutionMcs = 800, 2400
@@ -68,6 +69,8 @@ def turnAll(scale):
 
 def turnForward(scale):
     """ поворот передней части робота """
+    SvrBR.SetMcs(servoScale(0))
+    SvrBL.SetMcs(servoScale(0))
     SvrFL.SetMcs(servoScale(90 * scale))
     SvrFR.SetMcs(servoScale(90 * scale))
     return True
@@ -75,6 +78,8 @@ def turnForward(scale):
 
 def move(speed):
     """ движение вперед/назад """
-    MotorLB.SetValue(-speed)
-    MotorRB.SetValue(speed)
+    SvrBR.SetMcs(servoScale(0))
+    SvrBL.SetMcs(servoScale(0))
+    MotorLB.SetValue(speed)
+    MotorRB.SetValue(-speed)
     return True
