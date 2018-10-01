@@ -10,8 +10,8 @@ import rpicam
 from config import *
 
 # настройки видеопотока
-FORMAT = rpicam.FORMAT_H264  # поток H264
-# FORMAT = rpicam.FORMAT_MJPEG #поток MJPEG
+#FORMAT = rpicam.FORMAT_H264  # поток H264
+FORMAT = rpicam.FORMAT_MJPEG #поток MJPEG
 WIDTH, HEIGHT = 640, 360
 RESOLUTION = (WIDTH, HEIGHT)
 FRAMERATE = 30
