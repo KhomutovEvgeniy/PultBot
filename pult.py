@@ -4,6 +4,7 @@ from RTCJoystick import Joystick
 from Control import Control
 from config import *
 import time
+import GstCV
 
 joystick = Joystick()
 joystick.connect("/dev/input/js0")
@@ -15,6 +16,8 @@ control.robot.connect(IP, str(PORT))
 
 joystick.start()
 control.start()
+camera = GstCV.CVGstreamer(IP, 5000, 5001, 5005, toAVS=True)
+camera.start()
 
 while True:
     time.sleep(0.5)
