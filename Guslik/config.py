@@ -8,9 +8,9 @@ from RPiPWM import *
     R - Right
 """
 IP = '173.1.0.78'  # IP адрес куда отправляем видео
-RPCServerPort = 8000  # порт RPC сервера
+RPCServerPort = 9000  # порт RPC сервера
 RTP_PORT = 5000
-PORT = 9000
+PORT = 8000
 
 chanSrvFL = 8  # канал для передней левой сервы
 chanSvrFR = 11  # канал для передней правой сервы
@@ -49,38 +49,50 @@ def servoScale(value):  # рескейлим серву, как нам нужн�
 
 def rotate(speed):
     """ поворот на месте, speed - скорость поворота """
+    """
     SvrFL.SetMcs(servoScale(rotateAngle))
     SvrFR.SetMcs(servoScale(-rotateAngle))
     SvrBL.SetMcs(servoScale(-rotateAngle))
     SvrBR.SetMcs(servoScale(rotateAngle))
     MotorRB.SetValue(speed)
     MotorLB.SetValue(speed)
+    """
+    print(1)
     return True
 
 
 def turnAll(scale):
     """ поворот всех серв на один угол"""
+    """
     result = servoScale(90 * scale)
     SvrFL.SetMcs(result)
     SvrFR.SetMcs(result)
     SvrBL.SetMcs(result)
     SvrBR.SetMcs(result)
+    """
+    print(2)
     return True
 
 
 def turnForward(scale):
     """ поворот передней части робота """
+    """
     SvrBR.SetMcs(servoScale(0))
     SvrBL.SetMcs(servoScale(0))
     SvrFL.SetMcs(servoScale(90 * scale))
     SvrFR.SetMcs(servoScale(90 * scale))
+    """
+    print(3)
     return True
 
 
 def move(speed):
     """ движение вперед/назад """
+    """
     SvrBR.SetMcs(servoScale(0))
     SvrBL.SetMcs(servoScale(0))
     MotorLB.SetValue(speed)
     MotorRB.SetValue(-speed)
+    """
+    print(4)
     return True

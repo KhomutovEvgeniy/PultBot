@@ -3,12 +3,12 @@ import Robot
 import threading
 import time
 from config import *
-
+import SocketRobot
 
 class Control(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self, daemon=True)
-        self.robot = Robot.Robot()
+        self.robot = SocketRobot.SocketRobot()
         self._joystick = None
         self._EXIT = False
 
@@ -26,6 +26,7 @@ class Control(threading.Thread):
                         self.robot.move(self._joystick.Axis.get(MOVE_STICK))  # движение
                     else:
                         self.robot.rotate(self._joystick.Axis.get(ROTATE_STICK))     # поворот на месте
+                        pass
             except:
                 pass
             time.sleep(SEND_DELAY)

@@ -1,4 +1,22 @@
 import xmlrpc.client
+import time
+
+
+def timeit(method):
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+
+        if 'log_time' in kw:
+            name = kw.get('log_name', method.__name__.upper())
+            kw['log_time'][name] = int((te - ts) * 1000)
+        else:
+            print('%r  %2.2f ms' % \
+                  (method.__name__, (te - ts) * 1000))
+        return result
+
+    return timed
 
 
 class Robot:    # класс, переносящий ф-ии с робота на пульт
@@ -13,8 +31,10 @@ class Robot:    # класс, переносящий ф-ии с робота н�
         self._ip = ip
         self._port = port
         self._proxy = "http://" + ip + ':' + port
+        print(self._proxy)
         self._client = xmlrpc.client.ServerProxy(self._proxy)
 
+    @timeit
     def turnForward(self, scale):  # scale - значение из диапазона (-1, 1)
         # 	 поворачиваем сервами в зависимости от значения со стика
         self._client.turnForward(scale)
