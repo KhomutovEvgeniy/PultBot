@@ -9,8 +9,8 @@ class SocketRobot:
         self._motorSpeed = 0
         self._argDict = {
             "turnForwardArg": float(0.0),
-            "moveArg": float(0.0),
-            "rotateArg": float(0.0),
+            "moveArg": int(0.0),
+            "rotateArg": int(0.0),
             "turnAllArg": float(0.0)
         }
 

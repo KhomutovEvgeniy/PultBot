@@ -5,6 +5,7 @@ import time
 from config import *
 import SocketRobot
 
+
 class Control(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self, daemon=True)
@@ -28,15 +29,17 @@ class Control(threading.Thread):
                         self.robot.rotate(self._joystick.Axis.get(ROTATE_STICK))     # поворот на месте
                         pass
             except:
-                pass
+                print("Ошибка управления")
             time.sleep(SEND_DELAY)
 
     def connectHandlers(self):  # привязка обработчиков кнопок
-        def addSpeed():
-            self.robot.motorSpeed += SPEED_CHANGE_STEP     # прибавляем скорость
+        def addSpeed(w):
+            if w:
+                self.robot.motorSpeed += SPEED_CHANGE_STEP     # прибавляем скорость
 
-        def subSpeed():
-            self.robot.motorSpeed -= SPEED_CHANGE_STEP     # уменьшаем скорость
+        def subSpeed(w):
+            if w:
+                self.robot.motorSpeed -= SPEED_CHANGE_STEP     # уменьшаем скорость
 
         self._joystick.connectButton(ADD_SPEED_BUTTON, addSpeed)
         self._joystick.connectButton(SUB_SPEED_BUTTON, subSpeed)

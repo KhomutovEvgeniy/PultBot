@@ -37,6 +37,7 @@ class Control:
 
             if data[3] != self._oldPackage[3]:
                 self._eventDict["turnAll"].push(data[3])
+            self._oldPackage = data[:]
 
         self._receiver.connectToEvent(onReceive, "onReceive")
         self._receiver.connect()

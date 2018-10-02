@@ -12,7 +12,7 @@ joystick.info()
 
 control = Control()
 control.setJoystick(joystick)
-control.robot.connect(IP, str(PORT))
+control.robot.connect(IP, PORT)
 
 joystick.start()
 control.start()
