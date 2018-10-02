@@ -49,12 +49,20 @@ def servoScale(value):  # рескейлим серву, как нам нужн�
 
 def rotate(speed):
     """ поворот на месте, speed - скорость поворота """
-    SvrFL.SetMcs(servoScale(rotateAngle))
-    SvrFR.SetMcs(servoScale(-rotateAngle))
-    SvrBL.SetMcs(servoScale(-rotateAngle))
-    SvrBR.SetMcs(servoScale(rotateAngle))
-    MotorRB.SetValue(speed)
-    MotorLB.SetValue(speed)
+    if abs(speed) < 10:
+        SvrFL.SetMcs(servoScale(0))
+        SvrFR.SetMcs(servoScale(0))
+        SvrBL.SetMcs(servoScale(0))
+        SvrBR.SetMcs(servoScale(0))
+        MotorRB.SetValue(0)
+        MotorLB.SetValue(0)
+    else:
+        SvrFL.SetMcs(servoScale(rotateAngle))
+        SvrFR.SetMcs(servoScale(-rotateAngle))
+        SvrBL.SetMcs(servoScale(-rotateAngle))
+        SvrBR.SetMcs(servoScale(rotateAngle))
+        MotorRB.SetValue(speed)
+        MotorLB.SetValue(speed)
     return True
 
 
@@ -72,8 +80,8 @@ def turnForward(scale):
     """ поворот передней части робота """
     SvrBR.SetMcs(servoScale(0))
     SvrBL.SetMcs(servoScale(0))
-    SvrFL.SetMcs(servoScale(90 * scale))
-    SvrFR.SetMcs(servoScale(90 * scale))
+    SvrFL.SetMcs(servoScale(rotateAngle * scale))
+    SvrFR.SetMcs(servoScale(rotateAngle * scale))
     return True
 
 

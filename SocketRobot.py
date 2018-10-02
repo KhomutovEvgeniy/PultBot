@@ -38,9 +38,11 @@ class SocketRobot:
     def rotate(self, scale):    # scale - значение из диапазона (-1, 1) # поворачиваемся со скоростью моторов
         # MotorSpeed*коэффициент scale
         self._argDict["rotateArg"] = int(scale * self._motorSpeed)
+        self._sendPackage()
 
     def turnAll(self, scale):   # поворачивает всеми сервами на один и тот же угол
         self._argDict["turnAllArg"] = float(scale)
+        self._sendPackage()
 
     @property
     def online(self):   # создан ли клиент
