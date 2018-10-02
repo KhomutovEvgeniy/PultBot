@@ -26,6 +26,8 @@ servoResolutionMcs = 800, 2400
 rotateAngle = 57.76     # угол в градусах, на который надо повернуть сервы, чтобы робот крутился на месте
 # для квадратных роботов это 45 градусов
 
+SENSIVITY = 102     # чувствительность автономки
+
 SvrFL = Servo270(chanSrvFL)  # передняя левая
 SvrFR = Servo270(chanSvrFR)  # передняя правая
 SvrBL = Servo270(chanSrvBL)  # задняя левая
@@ -33,6 +35,8 @@ SvrBR = Servo270(chanSrvBR)  # задняя правая
 
 MotorLB = ReverseMotor(chanRevMotorLB)  # моторы, индексы аналогичные
 MotorRB = ReverseMotor(chanRevMotorRB)
+
+AUTO = False    # флаг автономки
 
 
 def servoScale(value):  # рескейлим серву, как нам нужно
@@ -49,46 +53,60 @@ def servoScale(value):  # рескейлим серву, как нам нужн�
 
 def rotate(speed):
     """ поворот на месте, speed - скорость поворота """
-    if abs(speed) < 10:
-        SvrFL.SetMcs(servoScale(0))
-        SvrFR.SetMcs(servoScale(0))
-        SvrBL.SetMcs(servoScale(0))
-        SvrBR.SetMcs(servoScale(0))
-        MotorRB.SetValue(0)
-        MotorLB.SetValue(0)
-    else:
-        SvrFL.SetMcs(servoScale(rotateAngle))
-        SvrFR.SetMcs(servoScale(-rotateAngle))
-        SvrBL.SetMcs(servoScale(-rotateAngle))
-        SvrBR.SetMcs(servoScale(rotateAngle))
-        MotorRB.SetValue(speed)
-        MotorLB.SetValue(speed)
+    global AUTO
+    if not AUTO:
+        if abs(speed) < 10:
+            SvrFL.SetMcs(servoScale(0))
+            SvrFR.SetMcs(servoScale(0))
+            SvrBL.SetMcs(servoScale(0))
+            SvrBR.SetMcs(servoScale(0))
+            MotorRB.SetValue(0)
+            MotorLB.SetValue(0)
+        else:
+            SvrFL.SetMcs(servoScale(rotateAngle))
+            SvrFR.SetMcs(servoScale(-rotateAngle))
+            SvrBL.SetMcs(servoScale(-rotateAngle))
+            SvrBR.SetMcs(servoScale(rotateAngle))
+            MotorRB.SetValue(speed)
+            MotorLB.SetValue(speed)
     return True
 
 
 def turnAll(scale):
     """ поворот всех серв на один угол"""
-    result = servoScale(90 * scale)
-    SvrFL.SetMcs(result)
-    SvrFR.SetMcs(result)
-    SvrBL.SetMcs(result)
-    SvrBR.SetMcs(result)
+    global AUTO
+    if not AUTO:
+        result = servoScale(90 * scale)
+        SvrFL.SetMcs(result)
+        SvrFR.SetMcs(result)
+        SvrBL.SetMcs(result)
+        SvrBR.SetMcs(result)
     return True
 
 
 def turnForward(scale):
     """ поворот передней части робота """
-    SvrBR.SetMcs(servoScale(0))
-    SvrBL.SetMcs(servoScale(0))
-    SvrFL.SetMcs(servoScale(rotateAngle * scale))
-    SvrFR.SetMcs(servoScale(rotateAngle * scale))
+    global AUTO
+    if not AUTO:
+        SvrBR.SetMcs(servoScale(0))
+        SvrBL.SetMcs(servoScale(0))
+        SvrFL.SetMcs(servoScale(rotateAngle * scale))
+        SvrFR.SetMcs(servoScale(rotateAngle * scale))
     return True
 
 
 def move(speed):
     """ движение вперед/назад """
-    SvrBR.SetMcs(servoScale(0))
-    SvrBL.SetMcs(servoScale(0))
-    MotorLB.SetValue(speed)
-    MotorRB.SetValue(-speed)
+    global AUTO
+    if not AUTO:
+        SvrBR.SetMcs(servoScale(0))
+        SvrBL.SetMcs(servoScale(0))
+        MotorLB.SetValue(speed)
+        MotorRB.SetValue(-speed)
     return True
+
+
+def setAuto(b):
+    """ Установка автономности """
+    global AUTO
+    AUTO = b

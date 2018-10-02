@@ -11,6 +11,7 @@ class Control(threading.Thread):
         threading.Thread.__init__(self, daemon=True)
         self.robot = SocketRobot.SocketRobot()
         self._joystick = None
+        self._auto = False
         self._EXIT = False
 
     def setJoystick(self, joystick):  # устанавливаем джойстик, которым будем управлять
@@ -41,8 +42,14 @@ class Control(threading.Thread):
             if w:
                 self.robot.motorSpeed -= SPEED_CHANGE_STEP     # уменьшаем скорость
 
+        def setAutoButton(w):       # установка автономности
+            if w:
+                self._auto = not self._auto
+                self.robot.setAuto(self._auto)
+
         self._joystick.connectButton(ADD_SPEED_BUTTON, addSpeed)
         self._joystick.connectButton(SUB_SPEED_BUTTON, subSpeed)
+        self._joystick.connectButton(SET_AUTO_BUTTON, setAutoButton)
 
     def exit(self):
         self._EXIT = True

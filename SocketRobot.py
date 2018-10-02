@@ -11,18 +11,19 @@ class SocketRobot:
             "turnForwardArg": float(0.0),
             "moveArg": int(0.0),
             "rotateArg": int(0.0),
-            "turnAllArg": float(0.0)
+            "turnAllArg": float(0.0),
+            "setAutoArg": False
         }
 
     def connect(self, ip, port):
         self._sender = sender.Sender(ip, port)
-        self._sender.packageFormat = "fiif"
+        self._sender.packageFormat = "fiif?"
         self._sender.connect()
 
     def _sendPackage(self):
         self._sender.sendPackage(self._sender.pack(
             self._argDict["turnForwardArg"], self._argDict["moveArg"],
-            self._argDict["rotateArg"], self._argDict["turnAllArg"]
+            self._argDict["rotateArg"], self._argDict["turnAllArg"], self._argDict["setAutoArg"]
         ))
 
     def turnForward(self, scale):  # scale - значение из диапазона (-1, 1)
@@ -42,6 +43,10 @@ class SocketRobot:
 
     def turnAll(self, scale):   # поворачивает всеми сервами на один и тот же угол
         self._argDict["turnAllArg"] = float(scale)
+        self._sendPackage()
+
+    def setAuto(self, b):
+        self._argDict["setAutoArg"] = bool(b)
         self._sendPackage()
 
     @property

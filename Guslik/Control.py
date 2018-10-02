@@ -11,7 +11,8 @@ class Control:
             "turnForward": EventBlock("turnForward"),
             "move": EventBlock("move"),
             "rotate": EventBlock("rotate"),
-            "turnAll": EventBlock("turnAll")
+            "turnAll": EventBlock("turnAll"),
+            "setAuto": EventBlock("setAuto")
         }
         self._oldPackage = [None, None, None, None]
         self._eventMaster = EventMaster()
@@ -19,11 +20,12 @@ class Control:
         self._eventMaster.append(self._eventDict.get("move"))
         self._eventMaster.append(self._eventDict.get("rotate"))
         self._eventMaster.append(self._eventDict.get("turnAll"))
+        self._eventMaster.append(self._eventDict.get("setAuto"))
         self._eventMaster.start()
 
     def connect(self, ip, port):
         self._receiver = receiver.Receiver(ip, port)
-        self._receiver.packageFormat = "fiif"
+        self._receiver.packageFormat = "fiif?"
 
         def onReceive(data):
             if data[0] != self._oldPackage[0]:
@@ -37,6 +39,10 @@ class Control:
 
             if data[3] != self._oldPackage[3]:
                 self._eventDict["turnAll"].push(data[3])
+
+            if data[4] != self._oldPackage[4]:
+                self._eventDict["setAuto"].push(data[4])
+
             self._oldPackage = data[:]
 
         self._receiver.connectToEvent(onReceive, "onReceive")

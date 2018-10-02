@@ -10,18 +10,22 @@ import rpicam
 from config import *
 
 # настройки видеопотока
-#FORMAT = rpicam.FORMAT_H264  # поток H264
-FORMAT = rpicam.FORMAT_MJPEG #поток MJPEG
+# FORMAT = rpicam.FORMAT_H264  # поток H264
+FORMAT = rpicam.FORMAT_MJPEG  # поток MJPEG
 WIDTH, HEIGHT = 640, 360
 RESOLUTION = (WIDTH, HEIGHT)
 FRAMERATE = 30
 
 
-# поток для обработки кадров
-# параметр
-class FrameHandlerThread(threading.Thread):
+class FrameHandler(threading.Thread):
+
     def __init__(self, stream):
-        super(FrameHandlerThread, self).__init__()
+        super(FrameHandler, self).__init__()
+        self.middle = 106
+        self.frameWidth = 4 * int(640 / 6) + 15 - (2 * int(640 / 6) - 15)
+        self.controlRate = 15
+        self.speed = 25
+        #self.sender = frameSender
         self.daemon = True
         self.rpiCamStream = stream
         self._frame = None
@@ -30,21 +34,65 @@ class FrameHandlerThread(threading.Thread):
         self._newFrameEvent = threading.Event()  # событие для контроля поступления кадров
 
     def run(self):
-        while not self._stopped.is_set():
-            self.rpiCamStream.frameRequest()  # отправил запрос на новый кадр
-            self._newFrameEvent.wait()  # ждем появления нового кадра
-            if not (self._frame is None):  # если кадр есть
+        print('Frame handler started')
+        while not self._stopped.is_set():  # пока мы живём
+            while AUTO:  # если врублена автономка
+                height = 480  # инициализируем размер фрейма
+                width = 640
+                self.rpiCamStream.frameRequest()  # отправил запрос на новый кадр
+                self._newFrameEvent.wait()  # ждем появления нового кадра
+                if not (self._frame is None):  # если кадр есть
+                    frame = self._frame[4 * int(height / 5):height,
+                            2 * int(width / 6) - 15:4 * int(width / 6) + 15]  # обрезаем для оценки инверсности
+                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # делаем ч/б
 
-                # --------------------------------------
-                # тут у нас обрабока кадра self._frame средствами OpenCV
-                time.sleep(2)  # имитируем обработку кадра
-                imgFleName = 'frame%d.jpg' % self._frameCount
-                # cv2.imwrite(imgFleName, self._frame) #сохраняем полученный кадр в файл
-                #print('Write image file: %s' % imgFleName)
-                self._frameCount += 1
-                # --------------------------------------
+                    intensivity = int(gray.mean())  # получаем среднее значение
+                    if intensivity < 135:  # условие интесивности
+                        ret, binary = cv2.threshold(gray, SENSIVITY, 255,
+                                                    cv2.THRESH_BINARY)  # если инверсная инвертируем картинку
+                        print("Inverse")
+                    else:
+                        ret, binary = cv2.threshold(gray, SENSIVITY, 255,
+                                                    cv2.THRESH_BINARY_INV)  # переводим в ьинарное изображение
+                    # Find the contours of the frame
+                    cont_img, contours, hierarchy = cv2.findContours(binary.copy(), 1,
+                                                                     cv2.CHAIN_APPROX_NONE)  # получаем список контуров
 
-            self._newFrameEvent.clear()  # сбрасываем событие
+                    # Find the biggest contour (if detected)
+                    if len(contours) > 0:  # если нашли контур
+                        c = max(contours, key=cv2.contourArea)  # ищем максимальный контур
+                        M = cv2.moments(c)  # получаем массив с координатами
+                        if M['m00'] != 0:
+                            cx = int(M['m10'] / M['m00'])  # координата центра по х
+                            cy = int(M['m01'] / M['m00'])  # координата центра по у
+                        cv2.line(frame, (cx, 0), (cx, height), (255, 0, 0), 1)  # рисуем линни
+                        cv2.line(frame, (0, cy), (width, cy), (255, 0, 0), 1)
+
+                        cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)  # рисуем контур
+                        #self.sender.addFrame(frame)
+
+                        #speed = 55
+
+                        diff = cx / (self.frameWidth / 2) - 1
+                        print(diff)
+                        #if cy > 80:
+                        #    diff *= 25
+
+                        #leftSpeed = int(speed + diff * self.controlRate)
+                        #rightSpeed = int(speed - diff * self.controlRate)
+                        #print('Left: %s Right: %s' % (leftSpeed, rightSpeed))
+                        #self.setSpeed(-leftSpeed, -rightSpeed, True)
+
+                        #move(self.speed)
+
+                    else:  # если не нашли контур
+                        print("I don't see the line")
+                        #move(0)
+
+                self._newFrameEvent.clear()  # сбрасываем событие
+
+        print('Frame handler stopped')
+        move(0)
 
     def stop(self):  # остановка потока
         self._stopped.set()
@@ -73,13 +121,10 @@ rpiCamStreamer = rpicam.RPiCamStreamer(FORMAT, RESOLUTION, FRAMERATE, (IP, RTP_P
 # robotCamStreamer.setFlip(False, True) #отражаем кадр (вертикальное отражение, горизонтальное отражение)
 rpiCamStreamer.setRotation(180)  # поворачиваем кадр на 180 град, доступные значения 90, 180, 270
 
-
 # поток обработки кадров
-frameHandlerThread = FrameHandlerThread(rpiCamStreamer)
+frameHandlerThread = FrameHandler(rpiCamStreamer)
 
 
 def start():
     rpiCamStreamer.start()  # запускаем трансляцию
     frameHandlerThread.start()  # запускаем обработку
-
-

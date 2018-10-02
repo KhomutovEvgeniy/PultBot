@@ -25,6 +25,7 @@ class Robot:    # класс, переносящий ф-ии с робота н�
         self._port = None
         self._proxy = None
         self._client = None
+        self._maxMotorSpeed = 50
         self._motorSpeed = 0     # скорость, которую мы подаем на моторы
 
     def connect(self, ip, port):
@@ -61,10 +62,10 @@ class Robot:    # класс, переносящий ф-ии с робота н�
     @motorSpeed.setter
     def motorSpeed(self, value):    # устанавливаем максимально возможную скорость движения, которая дальше будет
         #  изменяться в некотором диапазоне
-        if value >= 100:
-            self._motorSpeed = 100
-        elif value <= - 100:
-            self._motorSpeed = -100
+        if value >= self._maxMotorSpeed:
+            self._motorSpeed = self._maxMotorSpeed
+        elif value <= -self._maxMotorSpeed:
+            self._motorSpeed = -self._maxMotorSpeed
         else:
             self._motorSpeed = value
 
