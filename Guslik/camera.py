@@ -70,7 +70,7 @@ class FrameHandler(threading.Thread):
                         diff = cx / (r[2] / 2) - 1
                         print(diff)
                         config.turnForwardit(diff)
-                        config.moveit(self.speed)
+                        config.moveit(-self.speed)
 
                     else:  # если не нашли контур
                         print("I don't see the line")
