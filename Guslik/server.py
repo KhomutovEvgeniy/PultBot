@@ -30,6 +30,7 @@ control.connectToEvent(turnAll, "turnAll")
 control.connectToEvent(rotate, "rotate")
 control.connectToEvent(move, "move")
 control.connectToEvent(setAuto, "setAuto")
+control.connectToEvent(setCamera, "setCamera")
 control.connect('', PORT)
 camera.start()
 

@@ -12,6 +12,7 @@ class Control(threading.Thread):
         self.robot = SocketRobot.SocketRobot()
         self._joystick = None
         self._auto = False
+        self._cameraPos = False     # позиция камеры
         self._EXIT = False
 
     def setJoystick(self, joystick):  # устанавливаем джойстик, которым будем управлять
@@ -47,9 +48,15 @@ class Control(threading.Thread):
                 self._auto = not self._auto
                 self.robot.setAuto(self._auto)
 
+        def rotateCamera(w):
+            if w:
+                self._cameraPos = not self._cameraPos
+                self.robot.setCamera(int(self._cameraPos))  # True - 1, False - 0
+
         self._joystick.connectButton(ADD_SPEED_BUTTON, addSpeed)
         self._joystick.connectButton(SUB_SPEED_BUTTON, subSpeed)
         self._joystick.connectButton(SET_AUTO_BUTTON, setAutoButton)
+        self._joystick.connectButton(ROTATE_CAMERA_BUTTON, rotateCamera)
 
     def exit(self):
         self._EXIT = True

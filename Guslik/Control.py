@@ -12,20 +12,22 @@ class Control:
             "move": EventBlock("move"),
             "rotate": EventBlock("rotate"),
             "turnAll": EventBlock("turnAll"),
-            "setAuto": EventBlock("setAuto")
+            "setAuto": EventBlock("setAuto"),
+            "setCamera": EventBlock("setCamera")
         }
-        self._oldPackage = [None, None, None, None]
+        self._oldPackage = [None, None, None, None, None, None]
         self._eventMaster = EventMaster()
         self._eventMaster.append(self._eventDict.get("turnForward"))
         self._eventMaster.append(self._eventDict.get("move"))
         self._eventMaster.append(self._eventDict.get("rotate"))
         self._eventMaster.append(self._eventDict.get("turnAll"))
         self._eventMaster.append(self._eventDict.get("setAuto"))
+        self._eventMaster.append(self._eventDict.get("setCamera"))
         self._eventMaster.start()
 
     def connect(self, ip, port):
         self._receiver = receiver.Receiver(ip, port)
-        self._receiver.packageFormat = "fiif?"
+        self._receiver.packageFormat = "fiif?f"
 
         def onReceive(data):
             if data[0] != self._oldPackage[0]:
@@ -42,6 +44,9 @@ class Control:
 
             if data[4] != self._oldPackage[4]:
                 self._eventDict["setAuto"].push(data[4])
+
+            if data[5] != self._oldPackage[5]:
+                self._eventDict["setCamera"].push(data[5])
 
             self._oldPackage = data[:]
 

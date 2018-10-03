@@ -16,13 +16,14 @@ chanSrvFL = 8  # канал для передней левой сервы
 chanSvrFR = 11  # канал для передней правой сервы
 chanSrvBL = 9  # канал для задней левой сервы
 chanSrvBR = 10  # канал для задней правой сервы
-chanSvrCAM = 5  # канал для сервы с камерой
+chanSvrCAM = 7  # канал для сервы с камерой
 
 chanRevMotorLB = 15  # каналы моторов, индексы аналогичны сервам
 chanRevMotorRB = 14
 
 servoResolutionDeg = -90, 90    # разрешение с центром в нуле
 servoResolutionMcs = 800, 2400
+cameraResolutionDeg = 5, 45     # разрешение камеры в градусах
 rotateAngle = 57.76     # угол в градусах, на который надо повернуть сервы, чтобы робот крутился на месте
 # для квадратных роботов это 45 градусов
 
@@ -32,6 +33,7 @@ SvrFL = Servo270(chanSrvFL)  # передняя левая
 SvrFR = Servo270(chanSvrFR)  # передняя правая
 SvrBL = Servo270(chanSrvBL)  # задняя левая
 SvrBR = Servo270(chanSrvBR)  # задняя правая
+SvrCAM = Servo90(chanSvrCAM)
 
 MotorLB = ReverseMotor(chanRevMotorLB)  # моторы, индексы аналогичные
 MotorRB = ReverseMotor(chanRevMotorRB)
@@ -104,6 +106,18 @@ def move(speed):
         MotorLB.SetValue(speed)
         MotorRB.SetValue(-speed)
     return True
+
+
+def setCamera(scale):
+    """ установить камеру в нужное положение """
+    resolution = cameraResolutionDeg[1] - cameraResolutionDeg[0]
+    if scale * resolution > cameraResolutionDeg[1]:
+        result = cameraResolutionDeg[1]
+    elif scale * resolution < cameraResolutionDeg[0]:
+        result = cameraResolutionDeg[0]
+    else:
+        result = scale * resolution
+    SvrCAM.SetValue(result)
 
 
 def setAuto(b):

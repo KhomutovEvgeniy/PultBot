@@ -12,18 +12,20 @@ class SocketRobot:
             "moveArg": int(0.0),
             "rotateArg": int(0.0),
             "turnAllArg": float(0.0),
-            "setAutoArg": False
+            "setAutoArg": False,
+            "setCameraArg": float(0.0)
         }
 
     def connect(self, ip, port):
         self._sender = sender.Sender(ip, port)
-        self._sender.packageFormat = "fiif?"
+        self._sender.packageFormat = "fiif?f"
         self._sender.connect()
 
     def _sendPackage(self):
         self._sender.sendPackage(self._sender.pack(
             self._argDict["turnForwardArg"], self._argDict["moveArg"],
-            self._argDict["rotateArg"], self._argDict["turnAllArg"], self._argDict["setAutoArg"]
+            self._argDict["rotateArg"], self._argDict["turnAllArg"],
+            self._argDict["setAutoArg"], self._argDict["setCameraArg"]
         ))
 
     def turnForward(self, scale):  # scale - значение из диапазона (-1, 1)
@@ -47,6 +49,10 @@ class SocketRobot:
 
     def setAuto(self, b):
         self._argDict["setAutoArg"] = bool(b)
+        self._sendPackage()
+
+    def setCamera(self, scale):
+        self._argDict["setCameraArg"] = float(scale)
         self._sendPackage()
 
     @property

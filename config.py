@@ -9,4 +9,5 @@ MOVE_STICK = 'rz'  # имя стика движения робота
 SPEED_CHANGE_STEP = 10  # размер шага изменения максимальной, при прибавлении или уменьшении с кнопки
 ADD_SPEED_BUTTON = 'pinkie'  # имя кнопки прибавления скорости
 SUB_SPEED_BUTTON = 'top2'  # имя кнопки уменьшениия шага
-SET_AUTO_BUTTON = 'base2'    # имя кнопки установки автономки
+SET_AUTO_BUTTON = 'thumb'    # имя кнопки установки автономки
+ROTATE_CAMERA_BUTTON = 'top'   # имя кнопки поворота камеры
