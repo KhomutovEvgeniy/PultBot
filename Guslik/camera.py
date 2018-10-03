@@ -7,7 +7,7 @@ import numpy as np
 import psutil
 import threading
 import rpicam
-from config import *
+import config
 
 # настройки видеопотока
 # FORMAT = rpicam.FORMAT_H264  # поток H264
@@ -22,10 +22,8 @@ class FrameHandler(threading.Thread):
     def __init__(self, stream):
         super(FrameHandler, self).__init__()
         self.middle = 106
-        self.frameWidth = 4 * int(640 / 6) + 15 - (2 * int(640 / 6) - 15)
-        self.controlRate = 15
+        self._cvFrameRect = 0, 0, 320, 200  # прямоугольник, выделяемый в кадре для OpenCV: x, y, width, height
         self.speed = 25
-        #self.sender = frameSender
         self.daemon = True
         self.rpiCamStream = stream
         self._frame = None
@@ -36,23 +34,23 @@ class FrameHandler(threading.Thread):
     def run(self):
         print('Frame handler started')
         while not self._stopped.is_set():  # пока мы живём
-            while AUTO:  # если врублена автономка
-                height = 480  # инициализируем размер фрейма
-                width = 640
+            while config.AUTO:  # если врублена автономка
+                height = HEIGHT  # инициализируем размер фрейма
+                width = WIDTH
                 self.rpiCamStream.frameRequest()  # отправил запрос на новый кадр
                 self._newFrameEvent.wait()  # ждем появления нового кадра
                 if not (self._frame is None):  # если кадр есть
-                    frame = self._frame[4 * int(height / 5):height,
-                            2 * int(width / 6) - 15:4 * int(width / 6) + 15]  # обрезаем для оценки инверсности
+                    r = self._cvFrameRect
+                    frame = self._frame[r[0]:r[0]+r[2], r[1]:r[1]+r[3]]   # r - прямоугольник: x, y, width, height
                     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # делаем ч/б
 
                     intensivity = int(gray.mean())  # получаем среднее значение
                     if intensivity < 135:  # условие интесивности
-                        ret, binary = cv2.threshold(gray, SENSIVITY, 255,
+                        ret, binary = cv2.threshold(gray, config.SENSIVITY, 255,
                                                     cv2.THRESH_BINARY)  # если инверсная инвертируем картинку
                         print("Inverse")
                     else:
-                        ret, binary = cv2.threshold(gray, SENSIVITY, 255,
+                        ret, binary = cv2.threshold(gray, config.SENSIVITY, 255,
                                                     cv2.THRESH_BINARY_INV)  # переводим в ьинарное изображение
                     # Find the contours of the frame
                     cont_img, contours, hierarchy = cv2.findContours(binary.copy(), 1,
@@ -73,7 +71,7 @@ class FrameHandler(threading.Thread):
 
                         #speed = 55
 
-                        diff = cx / (self.frameWidth / 2) - 1
+                        diff = cx / (r[2] / 2) - 1
                         print(diff)
                         #if cy > 80:
                         #    diff *= 25
@@ -90,9 +88,9 @@ class FrameHandler(threading.Thread):
                         #move(0)
 
                 self._newFrameEvent.clear()  # сбрасываем событие
-
+            time.sleep(0.1)
         print('Frame handler stopped')
-        move(0)
+        config.move(0)
 
     def stop(self):  # остановка потока
         self._stopped.set()
@@ -117,7 +115,7 @@ assert rpicam.checkCamera(), 'Raspberry Pi camera not found'
 
 # создаем трансляцию с камеры (тип потока h264/mjpeg, разрешение, частота кадров, хост куда шлем, функция обрабтчик
 # кадров)
-rpiCamStreamer = rpicam.RPiCamStreamer(FORMAT, RESOLUTION, FRAMERATE, (IP, RTP_PORT), onFrameCallback)
+rpiCamStreamer = rpicam.RPiCamStreamer(FORMAT, RESOLUTION, FRAMERATE, (config.IP, config.RTP_PORT), onFrameCallback)
 # robotCamStreamer.setFlip(False, True) #отражаем кадр (вертикальное отражение, горизонтальное отражение)
 rpiCamStreamer.setRotation(180)  # поворачиваем кадр на 180 град, доступные значения 90, 180, 270
 
