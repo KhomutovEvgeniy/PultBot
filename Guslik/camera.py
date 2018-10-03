@@ -26,6 +26,7 @@ class FrameHandler(threading.Thread):
         self.speed = 25
         self.daemon = True
         self.rpiCamStream = stream
+        self._internalFlag = False  # флаг, который помогает автономке
         self._frame = None
         self._frameCount = 0
         self._stopped = threading.Event()  # событие для остановки потока
@@ -43,7 +44,7 @@ class FrameHandler(threading.Thread):
                     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # делаем ч/б
 
                     intensivity = int(gray.mean())  # получаем среднее значение
-                    if intensivity < 135:  # условие интесивности
+                    if intensivity < 110:  # условие интесивности
                         ret, binary = cv2.threshold(gray, config.SENSIVITY, 255,
                                                     cv2.THRESH_BINARY)  # если инверсная инвертируем картинку
                         print("Inverse")
@@ -67,18 +68,26 @@ class FrameHandler(threading.Thread):
                         cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)  # рисуем контур
 
                         diff = cx / (r[2] / 2) - 1
-
-                        config.turnForward(diff)
-                        config.move(self.speed)
+                        print(diff)
+                        config.turnForwardit(diff)
+                        config.moveit(self.speed)
 
                     else:  # если не нашли контур
                         print("I don't see the line")
-                        config.move(0)
+                        config.moveit(0)
+
+                    if not config.AUTO:     # останавливаем робота, если кончилась автономка
+                        config.moveit(0)
+
+                    self._internalFlag = True
 
                 self._newFrameEvent.clear()  # сбрасываем событие
+            if self._internalFlag:
+                config.moveit(0)
+                self._internalFlag = False
             time.sleep(0.1)
         print('Frame handler stopped')
-        config.move(0)
+        config.moveit(0)
 
     def stop(self):  # остановка потока
         self._stopped.set()

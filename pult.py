@@ -17,25 +17,26 @@ control.robot.connect(IP, PORT)
 
 joystick.start()
 control.start()
-camera = GstCV.CVGstreamer(IP, 5000, 5001, 5005, toAVS=True, codec="JPEG")
+camera = GstCV.CVGstreamer(IP, 5000, 5001, 5005, toAVS=False, codec="JPEG")
 camera.start()
 
-SENSIVITY = 102     # чувствительность автономки
-r = 105, 70, 430, 200
+SENSIVITY = 108     # чувствительность автономки
+r = 40, 70, 560, 200
 
 while True:
     if camera.cvImage is not None:
-        print(camera.cvImage.shape)
+        #print(camera.cvImage.shape)
         frame = camera.cvImage[r[1]:(r[1] + r[3]), r[0]:(r[0] + r[2])]  # r - прямоугольник: x, y, width, height
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         intensivity = int(gray.mean())
-        if intensivity < 135:
+        print(intensivity)
+        if intensivity < 110:
             ret, binary = cv2.threshold(gray, SENSIVITY, 255, cv2.THRESH_BINARY)  # если инверсная инвертируем картинку
             print("Inverse")
         else:
             ret, binary = cv2.threshold(gray, SENSIVITY, 255,
                                         cv2.THRESH_BINARY_INV)  # переводим в ьинарное изображение
-        cont_img, contours, hierarchy = cv2.findContours(binary.copy(), 1, cv2.CHAIN_APPROX_NONE)
+        cont_img, contours, hierarchy = cv2.findContours(binary, 1, cv2.CHAIN_APPROX_NONE)
         if len(contours) > 0:  # если нашли контур
             c = max(contours, key=cv2.contourArea)  # ищем максимальный контур
             M = cv2.moments(c)  # получаем массив с координатами
@@ -46,12 +47,15 @@ while True:
             cv2.line(frame, (0, cy), (r[2], cy), (255, 0, 0), 1)
             cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)  # рисуем контур
             diff = cx / (r[2] / 2) - 1
-            print(diff)
+            #print(diff)
         else:  # если не нашли контур
             print("I don't see the line")
             # move(0)
         cv2.imshow("YES", frame)
-        cv2.waitKey(0)
+        cv2.imshow("NONE", camera.cvImage)
+        cv2.imshow("bin", binary)
+        cv2.imshow("gray", gray)
+        cv2.waitKey(1)
     time.sleep(0.05)
 
 

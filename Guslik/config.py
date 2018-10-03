@@ -27,7 +27,7 @@ cameraResolutionDeg = 5, 45     # разрешение камеры в град�
 rotateAngle = 57.76     # угол в градусах, на который надо повернуть сервы, чтобы робот крутился на месте
 # для квадратных роботов это 45 градусов
 
-SENSIVITY = 102     # чувствительность автономки
+SENSIVITY = 108     # чувствительность автономки
 
 SvrFL = Servo270(chanSrvFL)  # передняя левая
 SvrFR = Servo270(chanSvrFR)  # передняя правая
@@ -38,6 +38,7 @@ SvrCAM = Servo90(chanSvrCAM)
 MotorLB = ReverseMotor(chanRevMotorLB)  # моторы, индексы аналогичные
 MotorRB = ReverseMotor(chanRevMotorRB)
 
+global AUTO
 AUTO = False    # флаг автономки
 
 
@@ -86,6 +87,14 @@ def turnAll(scale):
     return True
 
 
+def turnForwardit(scale):
+    """ поворот передней части робота """
+    SvrBR.SetMcs(servoScale(-rotateAngle * scale))
+    SvrBL.SetMcs(servoScale(-rotateAngle * scale))
+    SvrFL.SetMcs(servoScale(rotateAngle * scale))
+    SvrFR.SetMcs(servoScale(rotateAngle * scale))
+
+
 def turnForward(scale):
     """ поворот передней части робота """
     global AUTO
@@ -97,14 +106,16 @@ def turnForward(scale):
     return True
 
 
+def moveit(speed):
+    MotorLB.SetValue(-speed)
+    MotorRB.SetValue(speed)
+
+
 def move(speed):
     """ движение вперед/назад """
     global AUTO
     if not AUTO:
-        SvrBR.SetMcs(servoScale(0))
-        SvrBL.SetMcs(servoScale(0))
-        MotorLB.SetValue(-speed)
-        MotorRB.SetValue(speed)
+        moveit(speed)
     return True
 
 
