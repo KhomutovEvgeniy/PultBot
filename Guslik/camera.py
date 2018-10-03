@@ -22,7 +22,7 @@ class FrameHandler(threading.Thread):
     def __init__(self, stream):
         super(FrameHandler, self).__init__()
         self.middle = 106
-        self._cvFrameRect = 0, 0, 320, 200  # прямоугольник, выделяемый в кадре для OpenCV: x, y, width, height
+        self._cvFrameRect = 105, 70, 430, 200  # прямоугольник, выделяемый в кадре для OpenCV: x, y, width, height
         self.speed = 25
         self.daemon = True
         self.rpiCamStream = stream
@@ -35,13 +35,11 @@ class FrameHandler(threading.Thread):
         print('Frame handler started')
         while not self._stopped.is_set():  # пока мы живём
             while config.AUTO:  # если врублена автономка
-                height = HEIGHT  # инициализируем размер фрейма
-                width = WIDTH
                 self.rpiCamStream.frameRequest()  # отправил запрос на новый кадр
                 self._newFrameEvent.wait()  # ждем появления нового кадра
                 if not (self._frame is None):  # если кадр есть
                     r = self._cvFrameRect
-                    frame = self._frame[r[0]:r[0]+r[2], r[1]:r[1]+r[3]]   # r - прямоугольник: x, y, width, height
+                    frame = self._frame[r[1]:r[1]+r[3], r[0]:r[0]+r[2]]   # r - прямоугольник: x, y, width, height
                     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # делаем ч/б
 
                     intensivity = int(gray.mean())  # получаем среднее значение
@@ -63,29 +61,19 @@ class FrameHandler(threading.Thread):
                         if M['m00'] != 0:
                             cx = int(M['m10'] / M['m00'])  # координата центра по х
                             cy = int(M['m01'] / M['m00'])  # координата центра по у
-                        cv2.line(frame, (cx, 0), (cx, height), (255, 0, 0), 1)  # рисуем линни
-                        cv2.line(frame, (0, cy), (width, cy), (255, 0, 0), 1)
+                        cv2.line(frame, (cx, 0), (cx, r[3]), (255, 0, 0), 1)  # рисуем линни
+                        cv2.line(frame, (0, cy), (r[2], cy), (255, 0, 0), 1)
 
                         cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)  # рисуем контур
-                        #self.sender.addFrame(frame)
-
-                        #speed = 55
 
                         diff = cx / (r[2] / 2) - 1
-                        print(diff)
-                        #if cy > 80:
-                        #    diff *= 25
 
-                        #leftSpeed = int(speed + diff * self.controlRate)
-                        #rightSpeed = int(speed - diff * self.controlRate)
-                        #print('Left: %s Right: %s' % (leftSpeed, rightSpeed))
-                        #self.setSpeed(-leftSpeed, -rightSpeed, True)
-
-                        #move(self.speed)
+                        config.turnForward(diff)
+                        config.move(self.speed)
 
                     else:  # если не нашли контур
                         print("I don't see the line")
-                        #move(0)
+                        config.move(0)
 
                 self._newFrameEvent.clear()  # сбрасываем событие
             time.sleep(0.1)

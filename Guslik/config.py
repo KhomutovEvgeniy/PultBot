@@ -103,8 +103,8 @@ def move(speed):
     if not AUTO:
         SvrBR.SetMcs(servoScale(0))
         SvrBL.SetMcs(servoScale(0))
-        MotorLB.SetValue(speed)
-        MotorRB.SetValue(-speed)
+        MotorLB.SetValue(-speed)
+        MotorRB.SetValue(speed)
     return True
 
 
