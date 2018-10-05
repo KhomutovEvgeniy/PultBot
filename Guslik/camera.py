@@ -44,7 +44,7 @@ class FrameHandler(threading.Thread):
                     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # делаем ч/б
 
                     intensivity = int(gray.mean())  # получаем среднее значение
-                    if intensivity < 110:  # условие интесивности
+                    if intensivity < config.INTENSIVITY:  # условие интесивности
                         ret, binary = cv2.threshold(gray, config.SENSIVITY, 255,
                                                     cv2.THRESH_BINARY)  # если инверсная инвертируем картинку
                         print("Inverse")

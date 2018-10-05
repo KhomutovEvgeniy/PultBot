@@ -21,6 +21,7 @@ camera = GstCV.CVGstreamer(IP, 5000, 5001, 5005, toAVS=False, codec="JPEG")
 camera.start()
 
 SENSIVITY = 108     # чувствительность автономки
+INTENSIVITY = 110   # порог интенсивности
 r = 40, 70, 560, 200
 
 while True:
@@ -29,7 +30,6 @@ while True:
         frame = camera.cvImage[r[1]:(r[1] + r[3]), r[0]:(r[0] + r[2])]  # r - прямоугольник: x, y, width, height
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         intensivity = int(gray.mean())
-        print(intensivity)
         if intensivity < 110:
             ret, binary = cv2.threshold(gray, SENSIVITY, 255, cv2.THRESH_BINARY)  # если инверсная инвертируем картинку
             print("Inverse")

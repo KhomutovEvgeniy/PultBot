@@ -9,6 +9,7 @@ from RPiPWM import *
 """
 IP = '173.1.0.78'  # IP адрес куда отправляем видео
 RPCServerPort = 9000  # порт RPC сервера
+INTENSIVITY = 110
 RTP_PORT = 5000
 PORT = 8000
 
