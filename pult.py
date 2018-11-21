@@ -17,7 +17,7 @@ control.robot.connect(IP, PORT)
 
 joystick.start()
 control.start()
-camera = GstCV.CVGstreamer(IP, 5000, 5001, 5005, toAVS=False, codec="JPEG")
+camera = GstCV.CVGstreamer(IP, 5000, 5001, 5005, toAVS=True, codec="JPEG")
 camera.start()
 
 SENSIVITY = 108     # чувствительность автономки

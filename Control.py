@@ -23,13 +23,16 @@ class Control(threading.Thread):
         while not self._EXIT:
             try:
                 if self.robot.online and (self._joystick is not None):  # если клиент и джойстик созданы
-                    if int(self._joystick.Axis.get(ROTATE_STICK)*100.0) == 0:  # если нет разворота на месте в
+                    if not (self._joystick.Buttons[ROTATE_LEFT] or self._joystick.Buttons[ROTATE_RIGHT]):  # если нет разворота на месте в
                         # приближении(некоторые стики повреждены))
                         self.robot.rotate(0.0)  # убираем поворот
                         self.robot.turnForward(self._joystick.Axis.get(TURN_STICK))  # поворот
                         self.robot.move(self._joystick.Axis.get(MOVE_STICK))  # движение
                     else:
-                        self.robot.rotate(self._joystick.Axis.get(ROTATE_STICK))     # поворот на месте
+                        if self._joystick.Buttons[ROTATE_RIGHT]:
+                            self.robot.rotate(1.0)
+                        elif self._joystick.Buttons[ROTATE_LEFT]:
+                            self.robot.rotate(-1.0)
             except:
                 print("Ошибка управления")
             time.sleep(SEND_DELAY)
