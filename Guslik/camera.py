@@ -18,17 +18,13 @@ FRAMERATE = 30
 
 
 class FrameHandler(threading.Thread):
-
     def __init__(self, stream):
-        super(FrameHandler, self).__init__()
-        self.middle = 106
-        self._cvFrameRect = 105, 70, 430, 200  # прямоугольник, выделяемый в кадре для OpenCV: x, y, width, height
+        super(FrameHandler, self).__init__(daemon=True)
+        self._cvFrameRect = int(WIDTH * 1 / 6 + 0), int(HEIGHT * 1 / 5 + 0), int(WIDTH * 4 / 6 + 0), int(WIDTH * 3 / 5 + 0)  # прямоугольник, выделяемый в кадре для OpenCV: x, y, width, height
         self.speed = 25
-        self.daemon = True
         self.rpiCamStream = stream
         self._internalFlag = False  # флаг, который помогает автономке
         self._frame = None
-        self._frameCount = 0
         self._stopped = threading.Event()  # событие для остановки потока
         self._newFrameEvent = threading.Event()  # событие для контроля поступления кадров
 
@@ -68,7 +64,6 @@ class FrameHandler(threading.Thread):
                         cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)  # рисуем контур
 
                         diff = cx / (r[2] / 2) - 1
-                        print(diff)
                         config.turnForwardit(diff)
                         config.moveit(-self.speed)
 
