@@ -20,7 +20,7 @@ FRAMERATE = 30
 class FrameHandler(threading.Thread):
     def __init__(self, stream):
         super(FrameHandler, self).__init__(daemon=True)
-        self._cvFrameRect = int(WIDTH * 1 / 6 + 0), int(HEIGHT * 1 / 5 + 0), int(WIDTH * 4 / 6 + 0), int(WIDTH * 3 / 5 + 0)  # прямоугольник, выделяемый в кадре для OpenCV: x, y, width, height
+        self._cvFrameRect = int(WIDTH * 1 / 6 + 0), int(HEIGHT * 1 / 5 + 0), int(WIDTH * 4 / 6 + 0), int(HEIGHT * 3 / 5 + 0)  # прямоугольник, выделяемый в кадре для OpenCV: x, y, width, height
         self.speed = 25
         self.rpiCamStream = stream
         self._internalFlag = False  # флаг, который помогает автономке
