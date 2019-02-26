@@ -14,7 +14,7 @@ class Sender(threading.Thread):
         self._port = port
         self._queue = Queue()
         self._exit = False
-        self._packageFormat = 'ffff'
+        self._packageFormat = 'ffffffff'
 
     def connect(self):
         if not self._connected:

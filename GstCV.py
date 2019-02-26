@@ -128,7 +128,10 @@ class CVGstreamer:
         """ no need for synchronisation or preroll on the RTCP sink """
         self.rtcpsink0.set_property('async', False)
         self.rtcpsink0.set_property('sync', False)
-        self.player.add(self.rtpsrc0, self.rtcpsrc0, self.rtcpsink0)
+        self.player.add(self.rtpsrc0)
+        self.player.add(self.rtcpsrc0)
+        self.player.add(self.rtcpsink0)
+
 
         self.srcpad0 = Gst.Element.get_static_pad(self.rtpsrc0, 'src')
 
@@ -244,4 +247,3 @@ class CVGstreamer:
             self.toAVS = True
             self.stop()
             self.start()
-

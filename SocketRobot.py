@@ -1,5 +1,21 @@
 import sender
 
+SPEED_FIRST_DOF = 3.0
+SPEED_SECOND_DOF = 3.0
+SPEED_THIRD_DOF = 3.0
+SPEED_FOURTH_DOF = 3.0
+
+MAX_FIRST_DOF = 90.0
+MIN_FIRST_DOF = -90.0
+
+MAX_SECOND_DOF = 92.0
+MIN_SECOND_DOF = -90.0
+
+MAX_THIRD_DOF = 66.0
+MIN_THIRD_DOF = -90.0
+
+MAX_FOURTH_DOF = 81.0
+MIN_FOURTH_DOF = -69.0
 
 class SocketRobot:
     def __init__(self):
@@ -7,25 +23,36 @@ class SocketRobot:
         self._port = None
         self._sender = None
         self._motorSpeed = 0
+        self._first_DOF = 0.0
+        self._second_DOF = 0.0
+        self._third_DOF = 0.0
+        self._fourth_DOF = 0.0
+
         self._argDict = {
             "turnForwardArg": float(0.0),
             "moveArg": int(0.0),
             "rotateArg": int(0.0),
             "turnAllArg": float(0.0),
             "setAutoArg": False,
-            "setCameraArg": float(0.0)
+            "setCameraArg": float(0.0),
+            "turnFirstDOF": float(0.0),
+            "turnSecondDOF": float(0.0),
+            "turnThirdDOF": float(0.0),
+            "turnFourthDOF": float(0.0)
         }
 
     def connect(self, ip, port):
         self._sender = sender.Sender(ip, port)
-        self._sender.packageFormat = "fiif?f"
+        self._sender.packageFormat = "fiif?fffff"
         self._sender.connect()
 
     def _sendPackage(self):
         self._sender.sendPackage(self._sender.pack(
             self._argDict["turnForwardArg"], self._argDict["moveArg"],
             self._argDict["rotateArg"], self._argDict["turnAllArg"],
-            self._argDict["setAutoArg"], self._argDict["setCameraArg"]
+            self._argDict["setAutoArg"], self._argDict["setCameraArg"],
+            self._argDict["turnFirstDOF"], self._argDict["turnSecondDOF"],
+            self._argDict["turnThirdDOF"], self._argDict["turnFourthDOF"]
         ))
 
     def turnForward(self, scale):  # scale - значение из диапазона (-1, 1)
@@ -55,6 +82,27 @@ class SocketRobot:
         self._argDict["setCameraArg"] = float(scale)
         self._sendPackage()
 
+    def turnFirstDOF(self, scale):
+        self._first_DOF += SPEED_FIRST_DOF * float(scale)
+        self._argDict["turnFirstDOF"] = self._first_DOF
+        self._sendPackage()
+
+    def turnSecondDOF(self, scale):
+        self._second_DOF += SPEED_SECOND_DOF * float(scale)
+        self._argDict["turnSecondDOF"] = self._second_DOF
+        self._sendPackage()
+
+    def turnThirdDOF(self, scale):
+        self._third_DOF += SPEED_THIRD_DOF * float(scale)
+        self._argDict["turnThirdDOF"] = self._third_DOF
+        self._sendPackage()
+
+    def turnFourthDOF(self, scale):
+        self._fourth_DOF += SPEED_FOURTH_DOF * float(scale)
+        self._argDict["turnFourthDOF"] = self._fourth_DOF
+        self._sendPackage()
+
+
     @property
     def online(self):   # создан ли клиент
         return bool(self._sender)
@@ -74,3 +122,58 @@ class SocketRobot:
             self._motorSpeed = value
 
 
+    @property
+    def turnFirstDOFAngle(self):
+        return self._first_DOF
+
+    @turnFirstDOFAngle.setter
+    def turnFirstDOFAngle(self, value):    # устанавливаем максимально возможную скорость движения, которая дальше будет
+        #  изменяться в некотором диапазоне
+        if value >= MAX_FIRST_DOF:
+            self._first_DOF = MAX_FIRST_DOF
+        elif value <= MIN_FIRST_DOF:
+            self._first_DOF = MIN_FIRST_DOF
+        else:
+            self._first_DOF = value
+
+    @property
+    def turnSecondDOFAngle(self):
+        return self._second_DOF
+
+    @turnSecondDOFAngle.setter
+    def turnSecondDOFAngle(self, value):    # устанавливаем максимально возможную скорость движения, которая дальше будет
+        #  изменяться в некотором диапазоне
+        if value >= MAX_SECOND_DOF:
+            self._second_DOF = MAX_SECOND_DOF
+        elif value <= MIN_SECOND_DOF:
+            self._second_DOF = MIN_SECOND_DOF
+        else:
+            self._second_DOF = value
+
+    @property
+    def turnThirdDOFAngle(self):
+        return self._third_DOF
+
+    @turnThirdDOFAngle.setter
+    def turnThirdAngle(self, value):    # устанавливаем максимально возможную скорость движения, которая дальше будет
+        #  изменяться в некотором диапазоне
+        if value >= MAX_THIRD_DOF:
+            self._third_DOF = MAX_THIRD_DOF
+        elif value <= MIN_THIRD_DOF:
+            self._third_DOF = MIN_THIRD_DOF
+        else:
+            self._third_DOF = value
+
+    @property
+    def turnFourthDOFAngle(self):
+        return self._fourth_DOF
+
+    @turnFourthDOFAngle.setter
+    def turnFourthDOFAngle(self, value):    # устанавливаем максимально возможную скорость движения, которая дальше будет
+        #  изменяться в некотором диапазоне
+        if value >= MAX_FOURTH_DOF:
+            self._fourth_DOF = MAX_FOURTH_DOF
+        elif value <= MIN_FOURTH_DOF:
+            self._fourth_DOF = MIN_FOURTH_DOF
+        else:
+            self._fourth_DOF = value

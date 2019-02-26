@@ -15,6 +15,7 @@ class Control(threading.Thread):
         self._cameraPos = False     # позиция камеры
         self._EXIT = False
 
+
     def setJoystick(self, joystick):  # устанавливаем джойстик, которым будем управлять
         self._joystick = joystick
         self.connectHandlers()
@@ -23,16 +24,29 @@ class Control(threading.Thread):
         while not self._EXIT:
             try:
                 if self.robot.online and (self._joystick is not None):  # если клиент и джойстик созданы
-                    if not (self._joystick.Buttons[ROTATE_LEFT] or self._joystick.Buttons[ROTATE_RIGHT]):  # если нет разворота на месте в
+                    if int(self._joystick.Axis.get(ROTATE_STICK)*100.0) == 0:  # если нет разворота на месте в
                         # приближении(некоторые стики повреждены))
                         self.robot.rotate(0.0)  # убираем поворот
                         self.robot.turnForward(self._joystick.Axis.get(TURN_STICK))  # поворот
                         self.robot.move(self._joystick.Axis.get(MOVE_STICK))  # движение
+
+                        # поворот основания манипулятора - в какую сторону отклоняется стик - в ту сторону поворот
+                        self.robot.turnFirstDOF(self._joystick.Axis.get(TURN_FIRST_DOF))
+
+                        # поворот второй степенью манипулятора - в какую сторону отклоняется стик - в ту сторону поворот
+                        self.robot.turnSecondDOF(self._joystick.Axis.get(TURN_SECOND_DOF))
+
+                        # поворот третьей степени манипулятора - жмешь кнопку - поворачивает
+                        self.robot.turnThirdDOF(self._joystick.Buttons.get(TURN_DOWN_THIRD_DOF)
+                                                - self._joystick.Buttons.get(TURN_UP_THIRD_DOF))
+
+                        # схват манипулятора - жмешь кнопку - поворачивает)
+                        self.robot.turnFourthDOF(self._joystick.Buttons.get(TURN_LEFT_FOURTH_DOF)
+                                                - self._joystick.Buttons.get(TURN_RIGHT_FOURTH_DOF))
+
+
                     else:
-                        if self._joystick.Buttons[ROTATE_RIGHT]:
-                            self.robot.rotate(1.0)
-                        elif self._joystick.Buttons[ROTATE_LEFT]:
-                            self.robot.rotate(-1.0)
+                        self.robot.rotate(self._joystick.Axis.get(ROTATE_STICK))     # поворот на месте
             except:
                 print("Ошибка управления")
             time.sleep(SEND_DELAY)
@@ -55,6 +69,7 @@ class Control(threading.Thread):
             if w:
                 self._cameraPos = not self._cameraPos
                 self.robot.setCamera(int(self._cameraPos))  # True - 1, False - 0
+
 
         self._joystick.connectButton(ADD_SPEED_BUTTON, addSpeed)
         self._joystick.connectButton(SUB_SPEED_BUTTON, subSpeed)
