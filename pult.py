@@ -32,10 +32,10 @@ while True:
         intensivity = int(gray.mean())
         if intensivity < 110:
             ret, binary = cv2.threshold(gray, SENSIVITY, 255, cv2.THRESH_BINARY)  # если инверсная инвертируем картинку
-            print("Inverse")
+            #print("Inverse")
         else:
             ret, binary = cv2.threshold(gray, SENSIVITY, 255,
-                                        cv2.THRESH_BINARY_INV)  # переводим в ьинарное изображение
+                                        cv2.THRESH_BINARY_INV)  # переводим в бинарное изображение
         cont_img, contours, hierarchy = cv2.findContours(binary, 1, cv2.CHAIN_APPROX_NONE)
         if len(contours) > 0:  # если нашли контур
             c = max(contours, key=cv2.contourArea)  # ищем максимальный контур

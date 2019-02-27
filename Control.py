@@ -44,7 +44,6 @@ class Control(threading.Thread):
                         self.robot.turnFourthDOF(self._joystick.Buttons.get(TURN_LEFT_FOURTH_DOF)
                                                 - self._joystick.Buttons.get(TURN_RIGHT_FOURTH_DOF))
 
-
                     else:
                         self.robot.rotate(self._joystick.Axis.get(ROTATE_STICK))     # поворот на месте
             except:

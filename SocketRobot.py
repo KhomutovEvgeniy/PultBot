@@ -83,23 +83,23 @@ class SocketRobot:
         self._sendPackage()
 
     def turnFirstDOF(self, scale):
-        self._first_DOF += SPEED_FIRST_DOF * float(scale)
-        self._argDict["turnFirstDOF"] = self._first_DOF
+        self.turnFirstDOFAngle += SPEED_FIRST_DOF * float(scale)
+        self._argDict["turnFirstDOF"] = self.turnFirstDOFAngle
         self._sendPackage()
 
     def turnSecondDOF(self, scale):
-        self._second_DOF += SPEED_SECOND_DOF * float(scale)
-        self._argDict["turnSecondDOF"] = self._second_DOF
+        self.turnSecondDOFAngle += SPEED_SECOND_DOF * float(scale)
+        self._argDict["turnSecondDOF"] = self.turnSecondDOFAngle
         self._sendPackage()
 
     def turnThirdDOF(self, scale):
-        self._third_DOF += SPEED_THIRD_DOF * float(scale)
-        self._argDict["turnThirdDOF"] = self._third_DOF
+        self.turnThirdDOFAngle += SPEED_THIRD_DOF * float(scale)
+        self._argDict["turnThirdDOF"] = self.turnThirdDOFAngle
         self._sendPackage()
 
     def turnFourthDOF(self, scale):
-        self._fourth_DOF += SPEED_FOURTH_DOF * float(scale)
-        self._argDict["turnFourthDOF"] = self._fourth_DOF
+        self.turnFourthDOFAngle += SPEED_FOURTH_DOF * float(scale)
+        self._argDict["turnFourthDOF"] = self.turnFourthDOFAngle
         self._sendPackage()
 
 
